@@ -3,6 +3,7 @@ package com.unal.davsanba.biciparche;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +18,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.*;
+import com.google.firebase.database.*;
 
 public class LogIn extends AppCompatActivity implements View.OnClickListener {
 
@@ -26,6 +28,8 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
+    private FirebaseDatabase mDatabase;
+    private DatabaseReference mUsersReference;
 
     private GoogleApiClient mGoogleApiClient;
     private SignInButton mGoogleBtn;
@@ -40,6 +44,9 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener {
         mGoogleBtn.setOnClickListener(this);
 
         mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance();
+        mUsersReference = mDatabase.getReference(FirebaseReferences.DATABASE_REFERENCE).child(FirebaseReferences.USER_REFERENCE);
+
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions
@@ -53,6 +60,7 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener {
                 .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
                     @Override
                     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+                        //TODO
                         Toast.makeText(LogIn.this, "Error por que aja", Toast.LENGTH_SHORT).show();
                     }
                 })
@@ -62,14 +70,30 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener {
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
+                final FirebaseUser user = firebaseAuth.getCurrentUser(  );
                 if (user != null) {
+                    mUsersReference.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (!dataSnapshot.exists()) {
+                                Log.d(TAG, "usuario " + user.getPhotoUrl() + " no existe, creando usuario");
+                                DatabaseReference newUser =  mUsersReference.child(user.getUid());
+                                newUser.child("Username").setValue(user.getEmail());
+                                newUser.child("Name").setValue(user.getDisplayName());
+                                newUser.child("PhotoUrl").setValue(user.getPhotoUrl().toString());
+                            }
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
                     startActivity(new Intent(LogIn.this, MainActivity.class));
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                 } else {
                     // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                    Log.d(TAG, "onAuthStateChanged:signed_out");    
                 }
                 // ...
             }
