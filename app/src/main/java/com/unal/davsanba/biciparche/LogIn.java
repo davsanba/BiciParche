@@ -3,7 +3,6 @@ package com.unal.davsanba.biciparche;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -19,6 +18,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.*;
 import com.google.firebase.database.*;
+import com.unal.davsanba.biciparche.Data.FirebaseReferences;
 
 public class LogIn extends AppCompatActivity implements View.OnClickListener {
 
@@ -78,9 +78,9 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener {
                             if (!dataSnapshot.exists()) {
                                 Log.d(TAG, "usuario " + user.getPhotoUrl() + " no existe, creando usuario");
                                 DatabaseReference newUser =  mUsersReference.child(user.getUid());
-                                newUser.child("Username").setValue(user.getEmail());
-                                newUser.child("Name").setValue(user.getDisplayName());
-                                newUser.child("PhotoUrl").setValue(user.getPhotoUrl().toString());
+                                newUser.child(FirebaseReferences.USER_USERNAME_KEY).setValue(user.getEmail());
+                                newUser.child(FirebaseReferences.USER_NAME_KEY).setValue(user.getDisplayName());
+                                newUser.child(FirebaseReferences.USER_PHOTO_KEY).setValue(user.getPhotoUrl().toString());
                             }
                         }
                         @Override

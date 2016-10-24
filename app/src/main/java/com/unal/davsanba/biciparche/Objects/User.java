@@ -24,7 +24,44 @@ public class User {
         userGroups = new ArrayList<Group>();
     }
 
+    public String getName() {
+        return name;
+    }
 
+    public void setName(String name) {
+        this.name = name;
+    }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
+    }
+
+    public List<PersonalRoute> getUserRoutes() {
+        return userRoutes;
+    }
+
+    public void setUserRoutes(List<PersonalRoute> userRoutes) {
+        this.userRoutes = userRoutes;
+    }
+
+    public List<Group> getUserGroups() {
+        return userGroups;
+    }
+
+    public void setUserGroups(List<Group> userGroups) {
+        this.userGroups = userGroups;
+    }
 }
 

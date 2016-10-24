@@ -9,9 +9,27 @@
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
+    <string name="error_field_required">Este campo no se puede dejar en blanco</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="action_settings">Settings</string>
-    <string name="section_format">Hello World from section: %1$d</string>
+
+
+    <!-- Strings titles-->
+    <string name="title_new_route">Crear nueva ruta</string>
+
+    <!-- Strings new route-->
+    <string name="static_route_name">Nombre de la ruta</string>
+    <string name="static_route_days">¿Que dias utilizará la ruta?</string>
+    <string name="static_route_time">Horario en que utilizará la ruta</string>
+    <string name="static_route_start">Lugar donde comenzara el recorrido</string>
+
+    <string name="btn_text_select_location">Seleccionar ubicacion</string>
+    <string name="btn_text_create_route">Crear Ruta</string>
+
+    <string name="error_empty_name">El nombre de la ruta no puede estar vacio</string>
+    <string name="error_empty_days">Seleccione al menos un dia</string>
+    <string name="error_empty_hour">Seleccione una hora</string>
+    <string name="error_empty_location">Seleccione el lugar donde comenzara la ruta</string>
+
 </resources>
