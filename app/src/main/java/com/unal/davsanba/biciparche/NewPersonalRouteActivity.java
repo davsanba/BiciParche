@@ -3,22 +3,20 @@ package com.unal.davsanba.biciparche;
 import android.app.DialogFragment;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -117,6 +115,8 @@ public class NewPersonalRouteActivity extends AppCompatActivity implements View.
                     createNewRoute();
                 break;
             case R.id.btn_show_place_picker:
+                startActivity(new Intent(NewPersonalRouteActivity.this, CreateRouteActivity.class));
+               /*
                 PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
                 builder.setLatLngBounds(Bounds.BOGOTA_BOUND);
                 try {
@@ -126,6 +126,7 @@ public class NewPersonalRouteActivity extends AppCompatActivity implements View.
                 } catch (GooglePlayServicesNotAvailableException e) {
                     e.printStackTrace();
                 }
+                */
                 break;
         }
     }
@@ -157,8 +158,8 @@ public class NewPersonalRouteActivity extends AppCompatActivity implements View.
     }
 
     private void createNewRoute() {
-        Map<String, String> newRoute = new HashMap<String, String>();
-        newRoute.put(FirebaseReferences.ROUTE_OWNER_ID_KEY, mAuth.getCurrentUser().getUid().toString());
+        Map<String, String> newRoute = new HashMap< >();
+        newRoute.put(FirebaseReferences.ROUTE_OWNER_ID_KEY, mAuth.getCurrentUser().getUid());
         newRoute.put(FirebaseReferences.ROUTE_NAME_KEY, mRouteNameField.getText().toString());
         newRoute.put(FirebaseReferences.ROUTE_DAYS_KEY, mRouteDaysSpinner.getSelectedItemsAsString());
         newRoute.put(FirebaseReferences.ROUTE_HOUR_KEY, mRouteTimeField.getText().toString());

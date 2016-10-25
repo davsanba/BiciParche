@@ -31,5 +31,14 @@
     <string name="error_empty_days">Seleccione al menos un dia</string>
     <string name="error_empty_hour">Seleccione una hora</string>
     <string name="error_empty_location">Seleccione el lugar donde comenzara la ruta</string>
+    <string name="title_activity_create_route">Map</string>
+
+    <!-- Strings create route-->
+    <string name="static_map_origin">Seleccione el punto de origen</string>
+    <string name="static_map_dest">Seleccione el punto de destino</string>
+    <string name="static_map_personalization">Modifique la ruta con los marcadores, Marcadores restantes: </string>
+    <string name="btn_map_route_delete">Borar Ruta</string>
+    <string name="btn_map_done">Listo!</string>
+
 
 </resources>
