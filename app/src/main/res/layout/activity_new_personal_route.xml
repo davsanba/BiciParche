@@ -70,11 +70,6 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="@string/static_route_start"
                 android:id="@+id/text_view_route_start"/>
-        <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/field_route_start" android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="10dp" android:layout_marginRight="10dp" android:layout_marginTop="10dp"/>
         <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -1,6 +1,8 @@
 package com.unal.davsanba.biciparche;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -16,14 +18,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.*;
+import com.unal.davsanba.biciparche.Data.Bounds;
+import com.unal.davsanba.biciparche.Objects.Route;
 import com.unal.davsanba.biciparche.Util.DataParser;
 import org.json.JSONObject;
 
@@ -42,7 +50,8 @@ import static android.os.Build.VERSION_CODES.M;
 public class CreateRouteActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener, View.OnClickListener {
+        LocationListener, View.OnClickListener,
+        PlaceSelectionListener {
 
     private GoogleMap mMap;
     private ArrayList<LatLng> MarkerPoints;
@@ -56,6 +65,8 @@ public class CreateRouteActivity extends FragmentActivity implements OnMapReadyC
 
     private TextView mInfoTxt;
 
+    private PlaceAutocompleteFragment autocompleteFragment;
+
 
 
 
@@ -65,7 +76,7 @@ public class CreateRouteActivity extends FragmentActivity implements OnMapReadyC
         setContentView(R.layout.activity_create_route);
 
         mInfoTxt = (TextView) findViewById(R.id.text_view_map_display_info);
-        mInfoTxt.setText(getString(R.string.static_map_origin));
+        mInfoTxt.setText(getString(R.string.static_create_map_origin));
 
         mDeleteRouteBtn = (Button) findViewById(R.id.btn_map_remove);
         mDeleteRouteBtn.setOnClickListener(this);
@@ -83,6 +94,13 @@ public class CreateRouteActivity extends FragmentActivity implements OnMapReadyC
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        // Place API Search Bar
+        autocompleteFragment = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.place_fragment);
+        autocompleteFragment.setOnPlaceSelectedListener(this);
+        autocompleteFragment.setHint(getString(R.string.static_create_map_origin));
+        autocompleteFragment.setBoundsBias(Bounds.BOGOTA_BOUND);
     }
 
 
@@ -92,11 +110,24 @@ public class CreateRouteActivity extends FragmentActivity implements OnMapReadyC
             case R.id.btn_map_remove:
                 MarkerPoints.clear();
                 mMap.clear();
-                mInfoTxt.setText(getString(R.string.static_map_dest));
+                autocompleteFragment.setText("");
+                autocompleteFragment.setHint(getString(R.string.static_create_map_origin));
                 break;
             case R.id.btn_map_done:
+                Intent returnIntent = new Intent();
+                if(MarkerPoints.size() >= 2){
+                    returnIntent.putExtra("points",MarkerPoints);
+                    setResult(Activity.RESULT_OK,returnIntent);
+                    finish();
+                }else{
+                    setResult(Activity.RESULT_CANCELED);
+                }
                 break;
         }
+    }
+
+    private Route getRoute() {
+        return null;
     }
 
     /**
@@ -111,7 +142,6 @@ public class CreateRouteActivity extends FragmentActivity implements OnMapReadyC
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
         //Initialize Google Play Services
         if (android.os.Build.VERSION.SDK_INT >= M) {
             if (ContextCompat.checkSelfPermission(this,
@@ -130,51 +160,60 @@ public class CreateRouteActivity extends FragmentActivity implements OnMapReadyC
 
             @Override
             public void onMapClick(LatLng point) {
-                MarkerPoints.add(point);
-
-                // Add new marker to the Google Map Android API V2
-                mMap.addMarker(toPaint(point, MarkerPoints.size()));
-
-                // Checks, whether start and end locations are captured
-                if (MarkerPoints.size() >= 2){
-                    if (MarkerPoints.size() >= 3) {
-                        mMap.clear();
-                        int pos = 1;
-                        for (LatLng markerPoint : MarkerPoints) {
-                            mMap.addMarker(toPaint(markerPoint, pos));
-                            pos++;
-
-                        }
-                    }
-                    String url = getUrl(MarkerPoints);
-                    Log.d("onMapClick", url);
-                    FetchUrl FetchUrl = new FetchUrl();
-
-                    // Start downloading json data from Google Directions API
-                    FetchUrl.execute(url);
+                    createMark(point);
                 }
 
-            }
         });
 
     }
 
+    private void createMark(LatLng point){
+        MarkerPoints.add(point);
+
+
+        // Add new marker to the Google Map Android API V2
+        mMap.addMarker(toPaint(point, MarkerPoints.size()));
+
+        // Checks, whether start and end locations are captured
+        if (MarkerPoints.size() >= 2) {
+            if (MarkerPoints.size() >= 3) {
+                mMap.clear();
+                int pos = 1;
+                for (LatLng markerPoint : MarkerPoints) {
+                    mMap.addMarker(toPaint(markerPoint, pos));
+                    pos++;
+
+                }
+            }
+            String url = getUrl(MarkerPoints);
+            Log.d("onMapClick", url);
+            FetchUrl FetchUrl = new FetchUrl();
+
+
+            // Start downloading json data from Google Directions API
+            FetchUrl.execute(url);
+
+        }
+    }
+
     private MarkerOptions toPaint(LatLng mark, int pos){
         MarkerOptions marker = new MarkerOptions();
+        marker.draggable(true);
         marker.position(mark);
+
         if (pos == 1) {
             marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-            mInfoTxt.setText(getString(R.string.static_map_dest));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(mark));
+            autocompleteFragment.setHint(getString(R.string.static_create_map_dest));
         } else if (pos == 2){
             marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-            mInfoTxt.setText(getString(R.string.static_map_personalization) + String.valueOf(10 - pos));
+            mInfoTxt.setText(getString(R.string.static_create_map_modify));
         } else {
             marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-            mInfoTxt.setText(getString(R.string.static_map_personalization) + String.valueOf(10 - pos));
+            mInfoTxt.setText(getString(R.string.static_create_map_modify));
         }
         return marker;
     }
-
     private String getUrl(ArrayList<LatLng> MarkerPoints) {
 
         // Origin of route
@@ -252,6 +291,18 @@ public class CreateRouteActivity extends FragmentActivity implements OnMapReadyC
         }
         return data;
     }
+
+    @Override
+    public void onPlaceSelected(Place place) {
+        createMark(place.getLatLng());
+        //move map camera
+    }
+
+    @Override
+    public void onError(Status status) {
+
+    }
+
 
     // Fetches data from url passed
     private class FetchUrl extends AsyncTask<String, Void, String> {

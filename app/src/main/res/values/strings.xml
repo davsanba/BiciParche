@@ -17,26 +17,31 @@
 
     <!-- Strings titles-->
     <string name="title_new_route">Crear nueva ruta</string>
+    <string name="toast_route_created">Se ha creado la ruta: </string>
+
 
     <!-- Strings new route-->
     <string name="static_route_name">Nombre de la ruta</string>
     <string name="static_route_days">¿Que dias utilizará la ruta?</string>
     <string name="static_route_time">Horario en que utilizará la ruta</string>
-    <string name="static_route_start">Lugar donde comenzara el recorrido</string>
+    <string name="static_route_start">Seleccione la ruta</string>
 
-    <string name="btn_text_select_location">Seleccionar ubicacion</string>
+    <string name="btn_text_select_location">Seleccionar Ruta</string>
     <string name="btn_text_create_route">Crear Ruta</string>
 
     <string name="error_empty_name">El nombre de la ruta no puede estar vacio</string>
     <string name="error_empty_days">Seleccione al menos un dia</string>
     <string name="error_empty_hour">Seleccione una hora</string>
-    <string name="error_empty_location">Seleccione el lugar donde comenzara la ruta</string>
+    <string name="error_empty_location">Seleccione una ruta</string>
+    <string name="toast_error_route_not_created">No se creo la ruta, intente de nuevo</string>
+
     <string name="title_activity_create_route">Map</string>
 
     <!-- Strings create route-->
-    <string name="static_map_origin">Seleccione el punto de origen</string>
-    <string name="static_map_dest">Seleccione el punto de destino</string>
-    <string name="static_map_personalization">Modifique la ruta con los marcadores, Marcadores restantes: </string>
+    <string name="static_create_map_origin">Seleccione el punto de origen</string>
+    <string name="static_create_map_dest">Seleccione el punto de destino</string>
+    <string name="static_create_map_modify">Modifique la ruta</string>
+    <string name="static_create_map_marks">Marcadores restantes: </string>
     <string name="btn_map_route_delete">Borar Ruta</string>
     <string name="btn_map_done">Listo!</string>
 

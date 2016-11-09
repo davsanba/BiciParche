@@ -1,14 +1,17 @@
 package com.unal.davsanba.biciparche;
 
+import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
 import com.unal.davsanba.biciparche.Data.FirebaseReferences;
+import com.unal.davsanba.biciparche.Objects.Route;
 import com.unal.davsanba.biciparche.Objects.User;
 
 public class MainActivity extends AppCompatActivity {
@@ -21,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
     private Button mNewRouteBtn;
 
     private User currentUser;
+
+    private final int RC_CREATE_PERSONAL_ROUTE = 1;
 
     private static final String TAG = "Main_activity";
 
@@ -38,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         mNewRouteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, NewPersonalRouteActivity.class));
+                startActivityForResult(new Intent(MainActivity.this, NewPersonalRouteActivity.class),RC_CREATE_PERSONAL_ROUTE);
 
             }
         });
@@ -64,6 +69,22 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RC_CREATE_PERSONAL_ROUTE) {
+            if (resultCode == Activity.RESULT_OK) {
+                Route newRoute = data.getParcelableExtra("route");
+                String text = getString(R.string.toast_route_created) + newRoute.getRouteName();
+                Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(MainActivity.this, R.string.toast_error_route_not_created, Toast.LENGTH_SHORT).show();
+            }
+        }
+
     }
 
 }
