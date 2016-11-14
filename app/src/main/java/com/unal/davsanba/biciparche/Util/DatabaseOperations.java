@@ -2,6 +2,7 @@ package com.unal.davsanba.biciparche.Util;
 
 import android.content.Context;
 import android.widget.Toast;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
 import com.unal.davsanba.biciparche.Data.FirebaseReferences;
 import com.unal.davsanba.biciparche.Objects.Route;
@@ -13,13 +14,29 @@ import com.unal.davsanba.biciparche.Objects.User;
 public class DatabaseOperations {
 
     DatabaseReference mDatabaseReference;
+    private FirebaseAuth mAuth;
 
     public DatabaseOperations() {
-
     }
 
     public boolean createNewUser(User user) {
-        boolean succes = false;
+        boolean succes = true;
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference(FirebaseReferences.DATABASE_REFERENCE)
+                .child(FirebaseReferences.USER_REFERENCE);
+
+        DatabaseReference newUser =  mDatabaseReference.child(mAuth.getCurrentUser().getUid());
+        newUser.child(FirebaseReferences.USER_NAME_KEY).setValue(user.getUsername());
+        newUser.child(FirebaseReferences.USER_USERNAME_KEY).setValue(user.getName());
+        newUser.child(FirebaseReferences.USER_PHOTO_KEY).setValue(user.getPhotoUrl());
+        newUser.child(FirebaseReferences.USER_DEPARTMENT_KEY).setValue(user.getDepartment());
+        newUser.child(FirebaseReferences.USER_CAREER_KEY).setValue(user.getCareer());
+        newUser.child(FirebaseReferences.USER_PHONENUMBER_KEY).setValue(user.getPhoneNumber());
+
+        return succes;
+    }
+
+    public boolean updateUser(User user){
+        boolean succes = true;
         return succes;
     }
 
