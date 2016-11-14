@@ -3,6 +3,7 @@ package com.unal.davsanba.biciparche.Objects;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,7 +21,8 @@ public class User implements Parcelable {
     private List<Group> userGroups;
 
 
-    public User(){  }
+    public User() {
+    }
 
     public User(String name, String username, String photoUrl) {
         this.name = name;
@@ -37,7 +39,7 @@ public class User implements Parcelable {
         this.phoneNumber = phoneNumber;
     }
 
-    public User(String name, String username, String photoUrl, String department, String career, String phoneNumber, List<Route> userRoutes, List<Group> userGroups) {
+    public User(String name, String username, String photoUrl, String department, String career, String phoneNumber, ArrayList<Route> userRoutes, ArrayList<Group> userGroups) {
         this.name = name;
         this.username = username;
         this.photoUrl = photoUrl;
@@ -48,36 +50,6 @@ public class User implements Parcelable {
         this.userGroups = userGroups;
     }
 
-
-    protected User(Parcel in) {
-        name = in.readString();
-        username = in.readString();
-        photoUrl = in.readString();
-    }
-
-    public static final Creator<User> CREATOR = new Creator<User>() {
-        @Override
-        public User createFromParcel(Parcel in) {
-            return new User(in);
-        }
-
-        @Override
-        public User[] newArray(int size) {
-            return new User[size];
-        }
-    };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(name);
-        dest.writeString(username);
-        dest.writeString(photoUrl);
-    }
 
     public String getName() {
         return name;
@@ -142,5 +114,46 @@ public class User implements Parcelable {
     public void setUserGroups(List<Group> userGroups) {
         this.userGroups = userGroups;
     }
+
+    @Override
+    public int describeContents() { return 0; }
+
+    /**
+     * Storing the Student data to Parcel object
+     **/
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(username);
+        dest.writeString(photoUrl);
+        dest.writeString(department);
+        dest.writeString(career);
+        dest.writeString(phoneNumber);
+    }
+
+
+    private User(Parcel in) {
+        this.name = in.readString();
+        this.username = in.readString();
+        this.photoUrl = in.readString();
+        this.department = in.readString();
+        this.career = in.readString();
+        this.phoneNumber = in.readString();
+
+    }
+
+
+    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
+
+        @Override
+        public User createFromParcel(Parcel source) {
+            return new User(source);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 }
 

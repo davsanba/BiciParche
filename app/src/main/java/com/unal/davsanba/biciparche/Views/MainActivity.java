@@ -6,8 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,8 +36,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private DatabaseOperations mDBoperations;
 
-    private User currentUser;
-
 
     private static final String TAG = "Main_activity";
 
@@ -60,7 +56,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mDBoperations = new DatabaseOperations();
 
-        getUserData();
     }
 
     @Override
@@ -74,11 +69,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.btn_search_usr:
-                Intent create = new Intent(MainActivity.this, ProfileOperationsActivity.class);
-                create.putExtra(ActivitiesReferences.EXTRA_PROFILE_CREATE_UPDATE_SHOW, ActivitiesReferences.EXTRA_PROFILE_CREATE);
-                create.putExtra(ActivitiesReferences.EXTRA_PROFILE_USER,currentUser);
-                startActivity(create);
-                //getUsrMail();
+                //updateUserData();
+                getUsrMail();
                 break;
         }
     }
@@ -89,26 +81,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         View getUsrIdView = li.inflate(R.layout.dialog_get_user_mail, null);
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        // set dialog_get_emp_id.xml to alertdialog builder
         alertDialogBuilder.setView(getUsrIdView);
 
         final EditText userInput = (EditText) getUsrIdView.findViewById(R.id.editTextDialogUserInput);
-        userInput.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                //TODO
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                //TODO
-            }
-        });
 
         // set dialog message
         alertDialogBuilder
@@ -116,45 +91,72 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setPositiveButton("OK",new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog,int id) {
-
-                        mDBoperations.getUserByMail(userInput.getText().toString(),MainActivity.this);
-                    /*
-
-                        companyOperations= new CompanyOperations(MainActivity.this);
-                        companyOperations.open();
-                        Company comp = companyOperations.getCompany(Long.parseLong(userInput.getText().toString()));
-
-                        if (comp != null) {
-                            companyOperations.removeCompany(comp);
-                            Toast t = Toast.makeText(MainActivity.this,"Employee removed successfully!",Toast.LENGTH_SHORT);
-                            t.show();
-                        }else{
-                            Toast t = Toast.makeText(MainActivity.this,"Company not found",Toast.LENGTH_SHORT);
-                            t.show();
-                        }
-                        companyOperations.close();
-                        */
+                        Query query = mDatabaseReference.child(FirebaseReferences.USER_REFERENCE)
+                                .orderByChild(FirebaseReferences.USER_USERNAME_KEY).startAt(userInput.getText().toString());
+                        query.addValueEventListener( new ValueEventListener()
+                        {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot){
+                                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()){
+                                    ShowUserData(postSnapshot.getKey());
+                                    break;
+                                }
+                            }
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {  }
+                        });
                     }
                 }).create()
                 .show();
 
     }
 
-    private void getUserData(){
-        mDatabaseReference.child(FirebaseReferences.USER_REFERENCE).child(mAuth.getCurrentUser().getUid())
+
+    public void ShowUserData(String userId){
+        mDatabaseReference.child(FirebaseReferences.USER_REFERENCE).child(userId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
+                    User user;
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        currentUser = new User(dataSnapshot.child(FirebaseReferences.USER_NAME_KEY).getValue().toString(),
+                        user = new User(dataSnapshot.child(FirebaseReferences.USER_NAME_KEY).getValue().toString(),
                                 dataSnapshot.child(FirebaseReferences.USER_USERNAME_KEY).getValue().toString(),
                                 dataSnapshot.child(FirebaseReferences.USER_PHOTO_KEY).getValue().toString(),
                                 dataSnapshot.child(FirebaseReferences.USER_DEPARTMENT_KEY).getValue().toString(),
                                 dataSnapshot.child(FirebaseReferences.USER_CAREER_KEY).getValue().toString(),
                                 dataSnapshot.child(FirebaseReferences.USER_PHONENUMBER_KEY).getValue().toString()
                         );
+                        Log.d(TAG, "usuario " + user.getPhoneNumber() + " " + user.getDepartment());
+                        Intent update  = new Intent(MainActivity.this, ProfileOperationsActivity.class);
+                        update.putExtra(ActivitiesReferences.EXTRA_PROFILE_CREATE_UPDATE_SHOW, ActivitiesReferences.EXTRA_PROFILE_SHOW);
+                        update.putExtra(ActivitiesReferences.EXTRA_PROFILE_USER,user);
+                        startActivity(update);
+                    }
 
-                        Log.d(TAG, "usuario " + currentUser.getUsername() + " " + currentUser.getName());
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
 
+                    }
+                });
+    }
+
+    private void updateUserData(){
+        mDatabaseReference.child(FirebaseReferences.USER_REFERENCE).child(mAuth.getCurrentUser().getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    User user;
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        user = new User(dataSnapshot.child(FirebaseReferences.USER_NAME_KEY).getValue().toString(),
+                                dataSnapshot.child(FirebaseReferences.USER_USERNAME_KEY).getValue().toString(),
+                                dataSnapshot.child(FirebaseReferences.USER_PHOTO_KEY).getValue().toString(),
+                                dataSnapshot.child(FirebaseReferences.USER_DEPARTMENT_KEY).getValue().toString(),
+                                dataSnapshot.child(FirebaseReferences.USER_CAREER_KEY).getValue().toString(),
+                                dataSnapshot.child(FirebaseReferences.USER_PHONENUMBER_KEY).getValue().toString()
+                        );
+                        Log.d(TAG, "usuario " + user.getPhoneNumber() + " " + user.getDepartment());
+                        Intent update  = new Intent(MainActivity.this, ProfileOperationsActivity.class);
+                        update.putExtra(ActivitiesReferences.EXTRA_PROFILE_CREATE_UPDATE_SHOW, ActivitiesReferences.EXTRA_PROFILE_UPDATE);
+                        update.putExtra(ActivitiesReferences.EXTRA_PROFILE_USER,user);
+                        startActivity(update);
                     }
 
                     @Override

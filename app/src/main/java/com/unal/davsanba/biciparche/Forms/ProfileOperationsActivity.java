@@ -1,5 +1,6 @@
 package com.unal.davsanba.biciparche.Forms;
 
+import android.content.Intent;
 import android.graphics.*;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,8 +12,11 @@ import com.unal.davsanba.biciparche.Data.ActivitiesReferences;
 import com.unal.davsanba.biciparche.Objects.User;
 import com.unal.davsanba.biciparche.R;
 import com.unal.davsanba.biciparche.Util.DatabaseOperations;
+import com.unal.davsanba.biciparche.Views.MainActivity;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class ProfileOperationsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
@@ -63,10 +67,8 @@ public class ProfileOperationsActivity extends AppCompatActivity implements Adap
         mUserDepartmentSpinner.setAdapter(departmentAdapter);
         mUserDepartmentSpinner.setOnItemSelectedListener(this);
 
-
         mode = getIntent().getStringExtra(ActivitiesReferences.EXTRA_PROFILE_CREATE_UPDATE_SHOW);
         mCurrentUser = getIntent().getParcelableExtra(ActivitiesReferences.EXTRA_PROFILE_USER);
-
 
         fill(!mode.equals(ActivitiesReferences.EXTRA_PROFILE_CREATE));
 
@@ -88,6 +90,16 @@ public class ProfileOperationsActivity extends AppCompatActivity implements Adap
         mUserPhoneField.setEnabled(false);
         mUserCareerSpinner.setEnabled(false);
         mUserDepartmentSpinner.setEnabled(false);
+
+        List<String> your_array_list = new ArrayList<String>();
+        your_array_list.add(mCurrentUser.getCareer());
+
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_list_item_1,
+                your_array_list );
+
+        mUserCareerSpinner.setAdapter(arrayAdapter);
     }
 
     private void fill(boolean edit_update){
@@ -102,10 +114,6 @@ public class ProfileOperationsActivity extends AppCompatActivity implements Adap
 
             ArrayAdapter<CharSequence> departmentAdapter = (ArrayAdapter<CharSequence>) mUserDepartmentSpinner.getAdapter();
             mUserDepartmentSpinner.setSelection(departmentAdapter.getPosition(mCurrentUser.getDepartment()));
-
-            ArrayAdapter<CharSequence> careerAdapter = getArrayAdapter(mUserDepartmentSpinner.getSelectedItem().toString());
-            mUserCareerSpinner.setAdapter(careerAdapter);
-            mUserCareerSpinner.setSelection(departmentAdapter.getPosition(mCurrentUser.getCareer()));
         }
     }
 
@@ -121,9 +129,12 @@ public class ProfileOperationsActivity extends AppCompatActivity implements Adap
                     mCurrentUser.setCareer(mUserCareerSpinner.getSelectedItem().toString());
                     if(mode.equals(ActivitiesReferences.EXTRA_PROFILE_CREATE)) {
                         dbOper.createNewUser(mCurrentUser);
+                        Intent i = new Intent(this, MainActivity.class);
                         finish();
+                        startActivity(i);
                     } else if(mode.equals(ActivitiesReferences.EXTRA_PROFILE_UPDATE)){
                         dbOper.updateUser(mCurrentUser);
+                        finish();
                     }
 
                 }
@@ -134,10 +145,11 @@ public class ProfileOperationsActivity extends AppCompatActivity implements Adap
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if(parent.getId() == R.id.spinner_select_department) {
-            ArrayAdapter<CharSequence> careerAdapter = getArrayAdapter(mUserDepartmentSpinner.getSelectedItem().toString());
-            careerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            mUserCareerSpinner.setAdapter(careerAdapter);
-
+            if(!mode.equals(ActivitiesReferences.EXTRA_PROFILE_SHOW)) {
+                ArrayAdapter<CharSequence> careerAdapter = getArrayAdapter(mUserDepartmentSpinner.getSelectedItem().toString());
+                careerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                mUserCareerSpinner.setAdapter(careerAdapter);
+            }
         }
     }
 

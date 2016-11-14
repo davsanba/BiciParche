@@ -87,19 +87,12 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener {
                                 crear.putExtra(ActivitiesReferences.EXTRA_PROFILE_CREATE_UPDATE_SHOW, ActivitiesReferences.EXTRA_PROFILE_CREATE);
                                 crear.putExtra(ActivitiesReferences.EXTRA_PROFILE_USER, user);
                                 startActivity(crear);
-                                /*
-                                DatabaseReference newUser =  mUsersReference.child(user.getUid());
-                                newUser.child(FirebaseReferences.USER_USERNAME_KEY).setValue(user.getEmail());
-                                newUser.child(FirebaseReferences.USER_NAME_KEY).setValue(user.getDisplayName());
-                                newUser.child(FirebaseReferences.USER_PHOTO_KEY).setValue(user.getPhotoUrl().toString());
-                                */
                             }
                             else {
                                 Log.d(TAG, "onAuthStateChanged:signed_in:" + FirebaseUser.getUid());
                                 startActivity(new Intent(LogIn.this, MainActivity.class));
                                 // User is signed in
                             }
-
                         }
                         @Override
                         public void onCancelled(DatabaseError databaseError) {

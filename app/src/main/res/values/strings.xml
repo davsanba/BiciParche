@@ -53,6 +53,8 @@
     <string name="static_select_department">Facultad</string>
     <string name="btn_profile_done">Listo!</string>
     <string name="toast_error_profile_photo">No es posible cargar la fotografia</string>
+    <string name="error_empty_field">Este campo no puede estar vacío</string>
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

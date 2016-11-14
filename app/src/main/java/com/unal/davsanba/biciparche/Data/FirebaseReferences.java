@@ -13,7 +13,7 @@ public class FirebaseReferences {
     public static final String ROUTE_REFERENCE      = "routes";
 
     public static final String USER_USERNAME_KEY    = "user_username";
-    public static final String USER_NAME_KEY    = "user_username";
+    public static final String USER_NAME_KEY    = "user_name";
     public static final String USER_DEPARTMENT_KEY  = "user_department";
     public static final String USER_CAREER_KEY      = "user_career";
     public static final String USER_PHONENUMBER_KEY = "user_phone_number";
