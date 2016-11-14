@@ -1,4 +1,4 @@
-package com.unal.davsanba.biciparche;
+package com.unal.davsanba.biciparche.Forms;
 
 import android.Manifest;
 import android.app.Activity;
@@ -32,6 +32,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.*;
 import com.unal.davsanba.biciparche.Data.Bounds;
 import com.unal.davsanba.biciparche.Objects.Route;
+import com.unal.davsanba.biciparche.R;
 import com.unal.davsanba.biciparche.Util.DataParser;
 import org.json.JSONObject;
 

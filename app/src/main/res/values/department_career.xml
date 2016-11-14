@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="Facultades">
+        <item>Ciencias Agrarias</item>
+        <item>Artes</item>
+        <item>Ciencias</item>
+        <item>Ciencias Económicas</item>
+        <item>Ciencias Humanas</item>
+        <item>Derecho, Ciencias Políticas y Sociales</item>
+        <item>Enfermería</item>
+        <item>Ingeniería</item>
+        <item>Medicina</item>
+        <item>Medicina Veterinaria y Zootecnia</item>
+        <item>Odontología</item>
+    </string-array>
+
+    <string-array name="Ciencias_Agrarias">
+        <item>Ingeniería Agronómica</item>
+    </string-array>
+
+    <string-array name ="Artes">
+        <item>Arquitectura</item>
+        <item>Artes Plásticas</item>
+        <item>Cine y Televisión</item>
+        <item>Diseño Gráfico</item>
+        <item>Diseño Industrial</item>
+        <item>Música</item>
+        <item>Música Instrumental</item>
+    </string-array>
+
+    <string-array name="Ciencias">
+        <item>Biología</item>
+        <item>Estadística</item>
+        <item>Farmacia</item>
+        <item>Física</item>
+        <item>Geología</item>
+        <item>Matemáticas</item>
+        <item>Química</item>
+    </string-array>
+
+    <string-array name="Ciencias_Económicas">
+        <item>Administración de Empresas</item>
+        <item>Contaduría Pública</item>
+        <item>Economía</item>
+    </string-array>
+
+    <string-array name="Ciencias_Humanas">
+        <item>Antropología</item>
+        <item>Español y Filología Clásica</item>
+        <item>Estudios Literarios</item>
+        <item>Filología e Idiomas (Alemán)</item>
+        <item>Filología e Idiomas (Francés)</item>
+        <item>Filología e Idiomas (Inglés)</item>
+        <item>Filosofía</item>
+        <item>Geografía</item>
+        <item>Historia</item>
+        <item>Lingüística</item>
+        <item>Psicología</item>
+        <item>Sociología</item>
+        <item>Trabajo Social</item>
+    </string-array>
+
+    <string-array name = "Politicas">
+        <item>Ciencia Política</item>
+        <item>Derecho</item>
+    </string-array>
+
+    <string-array name="Enfermería">
+        <item>Enfermería</item>
+    </string-array>
+
+   <string-array name="Ingeniería">
+        <item>Ingeniería Agrícola</item>
+        <item>Ingeniería Civil</item>
+        <item>Ingeniería de Sistemas y Computación</item>
+        <item>Ingeniería Eléctrica</item>
+        <item>Ingeniería Electrónica</item>
+        <item>Ingeniería Industrial</item>
+        <item>Ingeniería Mecánica</item>
+        <item>Ingeniería Mecatrónica</item>
+        <item>Ingeniería Química</item>
+    </string-array>
+
+    <string-array name="Medicina">
+        <item>Fisioterapia</item>
+        <item>Fonoaudiología</item>
+        <item>Medicina</item>
+        <item>Nutrición y Dietética</item>
+        <item>Terapia Ocupacional</item>
+    </string-array>
+
+    <string-array name="Veterinaria_Zootecnia">
+        <item>Medicina Veterinaria</item>
+        <item>Zootecnia</item>
+    </string-array>
+
+    <string-array name="Odontología">
+        <item>Odontología</item>
+    </string-array>
+
+</resources>

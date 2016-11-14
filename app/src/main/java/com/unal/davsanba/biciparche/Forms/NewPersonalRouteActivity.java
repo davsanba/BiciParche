@@ -1,4 +1,4 @@
-package com.unal.davsanba.biciparche;
+package com.unal.davsanba.biciparche.Forms;
 
 
 import android.app.Activity;
@@ -11,10 +11,10 @@ import android.view.View;
 import android.widget.*;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.unal.davsanba.biciparche.Data.FirebaseReferences;
+import com.unal.davsanba.biciparche.Data.ActivitiesReferences;
 import com.unal.davsanba.biciparche.Objects.Route;
+import com.unal.davsanba.biciparche.R;
+import com.unal.davsanba.biciparche.Util.DatabaseOperations;
 import com.unal.davsanba.biciparche.Util.MultiSelectionSpinner;
 import com.unal.davsanba.biciparche.Util.TimePickerFragment;
 
@@ -26,7 +26,6 @@ import java.util.Locale;
 public class NewPersonalRouteActivity extends AppCompatActivity implements View.OnClickListener{
 
     private FirebaseAuth mAuth;
-    private DatabaseReference mDatabaseReference;
 
     private Button mShowPlacePickerBtn;
     private Button mCreateRouteBtn;
@@ -36,11 +35,11 @@ public class NewPersonalRouteActivity extends AppCompatActivity implements View.
     private EditText mRouteNameField;
     private EditText mRouteTimeField;
 
+    private DatabaseOperations mDbOperations;
+
     private MultiSelectionSpinner mRouteDaysSpinner;
 
     private ArrayList<LatLng> mMarkerPoints;
-
-    private final int RC_CREATE_ROUTE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +67,9 @@ public class NewPersonalRouteActivity extends AppCompatActivity implements View.
         mRouteDaysSpinner.setItems(getResources().getStringArray(R.array.week_days));
 
         mAuth = FirebaseAuth.getInstance();
-        mDatabaseReference = FirebaseDatabase.getInstance().getReference(FirebaseReferences.DATABASE_REFERENCE).child(FirebaseReferences.ROUTE_REFERENCE);
+
+        mDbOperations = new DatabaseOperations();
+
     }
 
     @Override
@@ -102,7 +103,8 @@ public class NewPersonalRouteActivity extends AppCompatActivity implements View.
                 }
                 break;
             case R.id.btn_show_place_picker:
-                startActivityForResult(new Intent(NewPersonalRouteActivity.this, CreateRouteActivity.class),RC_CREATE_ROUTE);
+                startActivityForResult(new Intent(NewPersonalRouteActivity.this, CreateRouteActivity.class),
+                        ActivitiesReferences.RC_CREATE_ROUTE);
                 break;
         }
     }
@@ -138,12 +140,7 @@ public class NewPersonalRouteActivity extends AppCompatActivity implements View.
                 mRouteDaysSpinner.getSelectedItemsAsString(), mRouteTimeField.getText().toString(),
                 mMarkerPoints.remove(0), mMarkerPoints.remove(0), mMarkerPoints);
 
-        try {
-            mDatabaseReference.setValue(route);
-        } catch (Exception e) {
-            e.printStackTrace();
-             route = null;
-        }
+        mDbOperations.createNewRoute(route);
         
         /*
         Map<String, String> newRoute = new HashMap< >();
@@ -164,7 +161,7 @@ public class NewPersonalRouteActivity extends AppCompatActivity implements View.
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == RC_CREATE_ROUTE) {
+        if (requestCode == ActivitiesReferences.RC_CREATE_ROUTE) {
             if (resultCode == Activity.RESULT_OK) {
                 mMarkerPoints = data.getParcelableArrayListExtra("points");
 

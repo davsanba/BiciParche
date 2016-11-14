@@ -17,7 +17,7 @@
 
     <!-- Strings titles-->
     <string name="title_new_route">Crear nueva ruta</string>
-    <string name="toast_route_created">Se ha creado la ruta: </string>
+    <string name="toast_route_created">Se ha creado la ruta:</string>
 
 
     <!-- Strings new route-->
@@ -41,9 +41,20 @@
     <string name="static_create_map_origin">Seleccione el punto de origen</string>
     <string name="static_create_map_dest">Seleccione el punto de destino</string>
     <string name="static_create_map_modify">Modifique la ruta</string>
-    <string name="static_create_map_marks">Marcadores restantes: </string>
+    <string name="static_create_map_marks">Marcadores restantes:</string>
     <string name="btn_map_route_delete">Borar Ruta</string>
     <string name="btn_map_done">Listo!</string>
 
+    <!-- Strings get user username-->
+    <string name="static_insert_username">Ingrese el correo del usuario</string>
+
+    <!-- Strings profile operations-->
+    <string name="static_select_career">Carrera</string>
+    <string name="static_select_department">Facultad</string>
+    <string name="btn_profile_done">Listo!</string>
+    <string name="toast_error_profile_photo">No es posible cargar la fotografia</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

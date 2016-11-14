@@ -1,4 +1,4 @@
-package com.unal.davsanba.biciparche;
+package com.unal.davsanba.biciparche.Views;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,7 +18,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.*;
 import com.google.firebase.database.*;
+import com.unal.davsanba.biciparche.Data.ActivitiesReferences;
 import com.unal.davsanba.biciparche.Data.FirebaseReferences;
+import com.unal.davsanba.biciparche.Forms.ProfileOperationsActivity;
+import com.unal.davsanba.biciparche.Objects.User;
+import com.unal.davsanba.biciparche.R;
 
 public class LogIn extends AppCompatActivity implements View.OnClickListener {
 
@@ -70,17 +74,30 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener {
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                final FirebaseUser user = firebaseAuth.getCurrentUser(  );
-                if (user != null) {
-                    mUsersReference.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                final FirebaseUser FirebaseUser = firebaseAuth.getCurrentUser(  );
+                if (FirebaseUser != null) {
+                    mUsersReference.child(FirebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (!dataSnapshot.exists()) {
-                                Log.d(TAG, "usuario " + user.getPhotoUrl() + " no existe, creando usuario");
+                                Log.d(TAG, "usuario " + FirebaseUser.getDisplayName() + " no existe, creando usuario");
+                                User user = new User(FirebaseUser.getDisplayName(), FirebaseUser.getEmail(),
+                                        FirebaseUser.getPhotoUrl().toString());
+                                Intent crear = new Intent(LogIn.this, ProfileOperationsActivity.class);
+                                crear.putExtra(ActivitiesReferences.EXTRA_PROFILE_CREATE_UPDATE_SHOW, ActivitiesReferences.EXTRA_PROFILE_CREATE);
+                                crear.putExtra(ActivitiesReferences.EXTRA_PROFILE_USER, user);
+                                /*
                                 DatabaseReference newUser =  mUsersReference.child(user.getUid());
                                 newUser.child(FirebaseReferences.USER_USERNAME_KEY).setValue(user.getEmail());
                                 newUser.child(FirebaseReferences.USER_NAME_KEY).setValue(user.getDisplayName());
                                 newUser.child(FirebaseReferences.USER_PHOTO_KEY).setValue(user.getPhotoUrl().toString());
+                                */
+
+                            }
+                            else {
+                                Log.d(TAG, "onAuthStateChanged:signed_in:" + FirebaseUser.getUid());
+                                startActivity(new Intent(LogIn.this, MainActivity.class));
+                                // User is signed in
                             }
                         }
                         @Override
@@ -88,9 +105,6 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener {
 
                         }
                     });
-                    startActivity(new Intent(LogIn.this, MainActivity.class));
-                    // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");    

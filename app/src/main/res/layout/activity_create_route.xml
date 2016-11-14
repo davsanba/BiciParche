@@ -4,7 +4,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context="com.unal.davsanba.biciparche.CreateRouteActivity" android:weightSum="1">
+        tools:context=".Forms.CreateRouteActivity" android:weightSum="1">
 
     <TextView
             android:layout_width="match_parent"
@@ -23,7 +23,7 @@
               android:layout_width="match_parent"
               android:layout_height="fill_parent"
               android:id="@+id/map"
-              tools:context="com.unal.davsanba.biciparche.CreateRouteActivity"
+              tools:context=".Forms.CreateRouteActivity"
               android:name="com.google.android.gms.maps.SupportMapFragment"
               android:layout_weight="0.96"/>
     <LinearLayout
