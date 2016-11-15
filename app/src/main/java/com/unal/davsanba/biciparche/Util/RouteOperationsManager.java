@@ -6,7 +6,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.unal.davsanba.biciparche.Data.FirebaseReferences;
+import com.unal.davsanba.biciparche.Data.FbRef;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ public class RouteOperationsManager {
         this.context = context;
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance();
-        mDatabaseReference = mDatabase.getReference(FirebaseReferences.DATABASE_REFERENCE).child(FirebaseReferences.ROUTE_REFERENCE);
+        mDatabaseReference = mDatabase.getReference(FbRef.DATABASE_REFERENCE).child(FbRef.ROUTE_REFERENCE);
     }
 
     public static LatLng strToLatLng(DataSnapshot data){

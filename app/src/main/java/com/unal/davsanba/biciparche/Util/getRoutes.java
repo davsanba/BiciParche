@@ -3,7 +3,7 @@ package com.unal.davsanba.biciparche.Util;
 import android.content.Context;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
-import com.unal.davsanba.biciparche.Data.FirebaseReferences;
+import com.unal.davsanba.biciparche.Data.FbRef;
 import com.unal.davsanba.biciparche.Objects.Route;
 
 import java.util.List;
@@ -24,11 +24,11 @@ public class getRoutes implements ValueEventListener {
     public getRoutes() {
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance();
-        mDatabaseReference = mDatabase.getReference(FirebaseReferences.DATABASE_REFERENCE).child(FirebaseReferences.ROUTE_REFERENCE);
+        mDatabaseReference = mDatabase.getReference(FbRef.DATABASE_REFERENCE).child(FbRef.ROUTE_REFERENCE);
     }
 
     public void getByUser(){
-        Query query = mDatabaseReference.orderByChild(FirebaseReferences.ROUTE_OWNER_ID_KEY).equalTo(mAuth.getCurrentUser().getUid());
+        Query query = mDatabaseReference.orderByChild(FbRef.ROUTE_OWNER_ID_KEY).equalTo(mAuth.getCurrentUser().getUid());
         query.addListenerForSingleValueEvent(this);
     }
 

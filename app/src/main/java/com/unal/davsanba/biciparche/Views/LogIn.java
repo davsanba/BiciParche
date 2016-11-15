@@ -18,8 +18,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.*;
 import com.google.firebase.database.*;
-import com.unal.davsanba.biciparche.Data.ActivitiesReferences;
-import com.unal.davsanba.biciparche.Data.FirebaseReferences;
+import com.unal.davsanba.biciparche.Data.ActRefs;
+import com.unal.davsanba.biciparche.Data.FbRef;
 import com.unal.davsanba.biciparche.Forms.ProfileOperationsActivity;
 import com.unal.davsanba.biciparche.Objects.User;
 import com.unal.davsanba.biciparche.R;
@@ -49,7 +49,7 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener {
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance();
-        mUsersReference = mDatabase.getReference(FirebaseReferences.DATABASE_REFERENCE).child(FirebaseReferences.USER_REFERENCE);
+        mUsersReference = mDatabase.getReference(FbRef.DATABASE_REFERENCE).child(FbRef.USER_REFERENCE);
 
 
         // Configure Google Sign In
@@ -84,8 +84,8 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener {
                                 User user = new User(FirebaseUser.getDisplayName(), FirebaseUser.getEmail(),
                                         FirebaseUser.getPhotoUrl().toString());
                                 Intent crear = new Intent(LogIn.this, ProfileOperationsActivity.class);
-                                crear.putExtra(ActivitiesReferences.EXTRA_PROFILE_CREATE_UPDATE_SHOW, ActivitiesReferences.EXTRA_PROFILE_CREATE);
-                                crear.putExtra(ActivitiesReferences.EXTRA_PROFILE_USER, user);
+                                crear.putExtra(ActRefs.EXTRA_CREATE_UPDATE_SHOW, ActRefs.EXTRA_CREATE);
+                                crear.putExtra(ActRefs.EXTRA_USER, user);
                                 startActivity(crear);
                             }
                             else {

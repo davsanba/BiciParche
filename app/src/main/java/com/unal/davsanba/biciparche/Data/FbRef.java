@@ -1,19 +1,16 @@
 package com.unal.davsanba.biciparche.Data;
 
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import com.unal.davsanba.biciparche.R;
-
 /**
  * Created by davsa on 19/10/2016.
  */
-public class FirebaseReferences {
+public class FbRef {
     public static final String DATABASE_REFERENCE   = "Biciparche";
     public static final String USER_REFERENCE       = "users";
     public static final String ROUTE_REFERENCE      = "routes";
+    public static final String GROUP_REFERENCE      = "groups";
 
     public static final String USER_USERNAME_KEY    = "user_username";
-    public static final String USER_NAME_KEY    = "user_name";
+    public static final String USER_NAME_KEY        = "user_name";
     public static final String USER_DEPARTMENT_KEY  = "user_department";
     public static final String USER_CAREER_KEY      = "user_career";
     public static final String USER_PHONENUMBER_KEY = "user_phone_number";
@@ -27,12 +24,9 @@ public class FirebaseReferences {
     public static final String ROUTE_END_KEY        = "routeEnd";
     public static final String ROUTE_MARKS_KEY      = "routeMarks";
 
-    public static class SearchUserActivity extends AppCompatActivity {
+    public static final String GROUP_NAME_KEY     = "groupName";
+    public static final String GROUP_ROUTE_ID_KEY = "groupRoute";
+    public static final String GROUP_USERS_ID_KEY = "groupUsers";
+    public static final String GROUP_ADMIN_ID_KEY = "groupAdminUserID";
 
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_search_user);
-        }
-    }
 }

@@ -15,7 +15,7 @@ import android.view.View;
 import android.widget.*;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
-import com.unal.davsanba.biciparche.Data.ActivitiesReferences;
+import com.unal.davsanba.biciparche.Data.ActRefs;
 import com.unal.davsanba.biciparche.Objects.Route;
 import com.unal.davsanba.biciparche.R;
 import com.unal.davsanba.biciparche.Util.DatabaseOperations;
@@ -88,10 +88,10 @@ public class NewPersonalRouteActivity extends AppCompatActivity implements View.
 
         mDbOperations = new DatabaseOperations();
 
-        mode = getIntent().getStringExtra(ActivitiesReferences.EXTRA_ROUTE_CREATE_UPDATE);
+        mode = getIntent().getStringExtra(ActRefs.EXTRA_CREATE_UPDATE_SHOW);
 
-        if(mode.equals(ActivitiesReferences.EXTRA_ROUTE_UPDATE)) {
-            mCurrentRoute = getIntent().getParcelableExtra(ActivitiesReferences.EXTRA_ROUTE);
+        if(mode.equals(ActRefs.EXTRA_UPDATE)) {
+            mCurrentRoute = getIntent().getParcelableExtra(ActRefs.EXTRA_ROUTE);
             Log.d(TAG, "Ruta para editar " + mCurrentRoute.getRouteID());
             fill();
         }
@@ -137,7 +137,7 @@ public class NewPersonalRouteActivity extends AppCompatActivity implements View.
                 break;
 
             case R.id.btn_cancel_route:
-                if(mode.equals(ActivitiesReferences.EXTRA_ROUTE_CREATE)) {
+                if(mode.equals(ActRefs.EXTRA_CREATE)) {
                     setResult(Activity.RESULT_CANCELED);
                 }else {
                     mDbOperations.removeRoute(mCurrentRoute);
@@ -147,7 +147,7 @@ public class NewPersonalRouteActivity extends AppCompatActivity implements View.
 
             case R.id.btn_show_place_picker:
                 startActivityForResult(new Intent(NewPersonalRouteActivity.this, CreateRouteActivity.class),
-                        ActivitiesReferences.RC_CREATE_ROUTE);
+                        ActRefs.RC_CREATE_ROUTE);
                 break;
 
         }
@@ -185,7 +185,7 @@ public class NewPersonalRouteActivity extends AppCompatActivity implements View.
                 mRouteDaysSpinner.getSelectedItemsAsString(), mRouteTimeField.getText().toString(),
                 mMarkerPoints.remove(0), mMarkerPoints.remove(0), mMarkerPoints);
 
-        if(mode.equals(ActivitiesReferences.EXTRA_ROUTE_UPDATE)){
+        if(mode.equals(ActRefs.EXTRA_UPDATE)){
             route.setRouteID(mCurrentRoute.getRouteID());
             mDbOperations.upDateRoute(route);
         } else
@@ -199,7 +199,7 @@ public class NewPersonalRouteActivity extends AppCompatActivity implements View.
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == ActivitiesReferences.RC_CREATE_ROUTE) {
+        if (requestCode == ActRefs.RC_CREATE_ROUTE) {
             if (resultCode == Activity.RESULT_OK) {
                 mMarkerPoints = data.getParcelableArrayListExtra("points");
                 printMap();

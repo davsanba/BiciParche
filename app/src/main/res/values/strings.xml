@@ -17,6 +17,9 @@
     <!-- Strings main-->
     <string name="static_main_routes">Mis Rutas</string>
     <string name="static_main_groups">Mis Grupos</string>
+    <string name="toast_group_created">Grupo creado con exito</string>
+    <string name="btn_text_new_route">Nueva Ruta</string>
+    <string name="btn_text_new_group">Nuevo Grupo</string>
 
 
     <!-- Strings titles-->
@@ -63,8 +66,25 @@
     <string name="error_empty_field">Este campo no puede estar vacío</string>
 
     <!-- Strings map list-->
-    <string name="static_map_list_name">Nombre: </string>
-    <string name="static_map_list_days">Dias: </string>
-    <string name="static_map_list_hoyr">Hora: </string>
+    <string name="static_map_list_name">Nombre:</string>
+    <string name="static_map_list_days">Dias:</string>
+    <string name="static_map_list_hoyr">Hora:</string>
+
+    <!-- Strings create group-->
+    <string name="static_group_name">Nombre del Grupo</string>
+    <string name="static_group_members">Miembros del Grupo</string>
+    <string name="btn_text_create_group">Crear Grupo</string>
+    <string name="btn_text_add_member">Buscar Usuario</string>
+
+    <!-- Strings create group-->
+
+    <string name="static_list_group_members">No de usuarios</string>
+    <string name="static_group_users">Usuarios</string>
+    <string name="static_list_group_hour">Hora</string>
+    <string name="static_list_group_day">Dias</string>
+    <string name="btn_text_group_leave">Salir del grupo</string>
+    <string name="user_not_found">Usuario no existe</string>
+
+
 
 </resources>

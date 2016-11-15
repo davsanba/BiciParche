@@ -11,8 +11,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
-import com.unal.davsanba.biciparche.Data.ActivitiesReferences;
-import com.unal.davsanba.biciparche.Data.FirebaseReferences;
+import com.unal.davsanba.biciparche.Data.ActRefs;
+import com.unal.davsanba.biciparche.Data.FbRef;
 import com.unal.davsanba.biciparche.Forms.ProfileOperationsActivity;
 import com.unal.davsanba.biciparche.Objects.User;
 import com.unal.davsanba.biciparche.R;
@@ -33,7 +33,7 @@ public class UserOperationsManager {
         this.context = context;
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance();
-        mDatabaseReference = mDatabase.getReference(FirebaseReferences.DATABASE_REFERENCE).child(FirebaseReferences.USER_REFERENCE);
+        mDatabaseReference = mDatabase.getReference(FbRef.DATABASE_REFERENCE).child(FbRef.USER_REFERENCE);
     }
 
     public void getUsrMail(){
@@ -54,7 +54,7 @@ public class UserOperationsManager {
                     public void onClick(DialogInterface dialog,int id) {
                         String mail = userInput.getText().toString();
                         if (mail.length() > 3) {
-                            Query query = mDatabaseReference.orderByChild(FirebaseReferences.USER_USERNAME_KEY).startAt(mail);
+                            Query query = mDatabaseReference.orderByChild(FbRef.USER_USERNAME_KEY).startAt(mail);
                             query.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -81,17 +81,17 @@ public class UserOperationsManager {
                     User user;
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        user = new User(dataSnapshot.child(FirebaseReferences.USER_NAME_KEY).getValue().toString(),
-                                dataSnapshot.child(FirebaseReferences.USER_USERNAME_KEY).getValue().toString(),
-                                dataSnapshot.child(FirebaseReferences.USER_PHOTO_KEY).getValue().toString(),
-                                dataSnapshot.child(FirebaseReferences.USER_DEPARTMENT_KEY).getValue().toString(),
-                                dataSnapshot.child(FirebaseReferences.USER_CAREER_KEY).getValue().toString(),
-                                dataSnapshot.child(FirebaseReferences.USER_PHONENUMBER_KEY).getValue().toString()
+                        user = new User(dataSnapshot.child(FbRef.USER_NAME_KEY).getValue().toString(),
+                                dataSnapshot.child(FbRef.USER_USERNAME_KEY).getValue().toString(),
+                                dataSnapshot.child(FbRef.USER_PHOTO_KEY).getValue().toString(),
+                                dataSnapshot.child(FbRef.USER_DEPARTMENT_KEY).getValue().toString(),
+                                dataSnapshot.child(FbRef.USER_CAREER_KEY).getValue().toString(),
+                                dataSnapshot.child(FbRef.USER_PHONENUMBER_KEY).getValue().toString()
                         );
                         Log.d(TAG, "usuario " + user.getPhoneNumber() + " " + user.getDepartment());
                         Intent update  = new Intent(context, ProfileOperationsActivity.class);
-                        update.putExtra(ActivitiesReferences.EXTRA_PROFILE_CREATE_UPDATE_SHOW, ActivitiesReferences.EXTRA_PROFILE_SHOW);
-                        update.putExtra(ActivitiesReferences.EXTRA_PROFILE_USER,user);
+                        update.putExtra(ActRefs.EXTRA_CREATE_UPDATE_SHOW, ActRefs.EXTRA_SHOW);
+                        update.putExtra(ActRefs.EXTRA_USER,user);
                         context.startActivity(update);
                     }
 
@@ -108,17 +108,17 @@ public class UserOperationsManager {
                     User user;
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        user = new User(dataSnapshot.child(FirebaseReferences.USER_NAME_KEY).getValue().toString(),
-                                dataSnapshot.child(FirebaseReferences.USER_USERNAME_KEY).getValue().toString(),
-                                dataSnapshot.child(FirebaseReferences.USER_PHOTO_KEY).getValue().toString(),
-                                dataSnapshot.child(FirebaseReferences.USER_DEPARTMENT_KEY).getValue().toString(),
-                                dataSnapshot.child(FirebaseReferences.USER_CAREER_KEY).getValue().toString(),
-                                dataSnapshot.child(FirebaseReferences.USER_PHONENUMBER_KEY).getValue().toString()
+                        user = new User(dataSnapshot.child(FbRef.USER_NAME_KEY).getValue().toString(),
+                                dataSnapshot.child(FbRef.USER_USERNAME_KEY).getValue().toString(),
+                                dataSnapshot.child(FbRef.USER_PHOTO_KEY).getValue().toString(),
+                                dataSnapshot.child(FbRef.USER_DEPARTMENT_KEY).getValue().toString(),
+                                dataSnapshot.child(FbRef.USER_CAREER_KEY).getValue().toString(),
+                                dataSnapshot.child(FbRef.USER_PHONENUMBER_KEY).getValue().toString()
                         );
                         Log.d(TAG, "usuario " + user.getPhoneNumber() + " " + user.getDepartment());
                         Intent update  = new Intent(context, ProfileOperationsActivity.class);
-                        update.putExtra(ActivitiesReferences.EXTRA_PROFILE_CREATE_UPDATE_SHOW, ActivitiesReferences.EXTRA_PROFILE_UPDATE);
-                        update.putExtra(ActivitiesReferences.EXTRA_PROFILE_USER,user);
+                        update.putExtra(ActRefs.EXTRA_CREATE_UPDATE_SHOW, ActRefs.EXTRA_UPDATE);
+                        update.putExtra(ActRefs.EXTRA_USER,user);
                         context.startActivity(update);
                     }
 

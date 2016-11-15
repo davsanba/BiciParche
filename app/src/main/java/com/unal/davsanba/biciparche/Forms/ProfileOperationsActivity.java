@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.*;
-import com.unal.davsanba.biciparche.Data.ActivitiesReferences;
+import com.unal.davsanba.biciparche.Data.ActRefs;
 import com.unal.davsanba.biciparche.Objects.User;
 import com.unal.davsanba.biciparche.R;
 import com.unal.davsanba.biciparche.Util.DatabaseOperations;
@@ -67,19 +67,19 @@ public class ProfileOperationsActivity extends AppCompatActivity implements Adap
         mUserDepartmentSpinner.setAdapter(departmentAdapter);
         mUserDepartmentSpinner.setOnItemSelectedListener(this);
 
-        mode = getIntent().getStringExtra(ActivitiesReferences.EXTRA_PROFILE_CREATE_UPDATE_SHOW);
-        mCurrentUser = getIntent().getParcelableExtra(ActivitiesReferences.EXTRA_PROFILE_USER);
+        mode = getIntent().getStringExtra(ActRefs.EXTRA_CREATE_UPDATE_SHOW);
+        mCurrentUser = getIntent().getParcelableExtra(ActRefs.EXTRA_USER);
 
-        fill(!mode.equals(ActivitiesReferences.EXTRA_PROFILE_CREATE));
+        fill(!mode.equals(ActRefs.EXTRA_CREATE));
 
         switch (mode){
-            case ActivitiesReferences.EXTRA_PROFILE_CREATE:
+            case ActRefs.EXTRA_CREATE:
                 break;
 
-            case ActivitiesReferences.EXTRA_PROFILE_UPDATE:
+            case ActRefs.EXTRA_UPDATE:
                 break;
 
-            case ActivitiesReferences.EXTRA_PROFILE_SHOW:
+            case ActRefs.EXTRA_SHOW:
                 show();
                 break;
         }
@@ -127,12 +127,12 @@ public class ProfileOperationsActivity extends AppCompatActivity implements Adap
                     mCurrentUser.setPhoneNumber(mUserPhoneField.getText().toString());
                     mCurrentUser.setDepartment(mUserDepartmentSpinner.getSelectedItem().toString());
                     mCurrentUser.setCareer(mUserCareerSpinner.getSelectedItem().toString());
-                    if(mode.equals(ActivitiesReferences.EXTRA_PROFILE_CREATE)) {
+                    if(mode.equals(ActRefs.EXTRA_CREATE)) {
                         dbOper.createNewUser(mCurrentUser);
                         Intent i = new Intent(this, MainActivity.class);
                         finish();
                         startActivity(i);
-                    } else if(mode.equals(ActivitiesReferences.EXTRA_PROFILE_UPDATE)){
+                    } else if(mode.equals(ActRefs.EXTRA_UPDATE)){
                         dbOper.updateUser(mCurrentUser);
                         finish();
                     }
@@ -145,7 +145,7 @@ public class ProfileOperationsActivity extends AppCompatActivity implements Adap
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if(parent.getId() == R.id.spinner_select_department) {
-            if(!mode.equals(ActivitiesReferences.EXTRA_PROFILE_SHOW)) {
+            if(!mode.equals(ActRefs.EXTRA_SHOW)) {
                 ArrayAdapter<CharSequence> careerAdapter = getArrayAdapter(mUserDepartmentSpinner.getSelectedItem().toString());
                 careerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 mUserCareerSpinner.setAdapter(careerAdapter);

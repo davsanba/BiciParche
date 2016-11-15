@@ -1,4 +1,4 @@
-package com.unal.davsanba.biciparche.Objects;
+package com.unal.davsanba.biciparche.Objects.ListAdapters;
 
 import android.content.Context;
 import android.graphics.*;
@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.unal.davsanba.biciparche.Objects.Route;
 import com.unal.davsanba.biciparche.R;
 
 import java.io.InputStream;

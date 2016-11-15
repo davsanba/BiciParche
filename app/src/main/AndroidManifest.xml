@@ -42,9 +42,11 @@
                 android:name=".Forms.CreateRouteActivity"
                 android:label="@string/google_maps_key">
         </activity>
-        <activity android:name=".Data.FirebaseReferences$SearchUserActivity">
+        <activity android:name=".Data.FbRef$SearchUserActivity">
         </activity>
         <activity android:name=".Forms.ProfileOperationsActivity">
+        </activity>
+        <activity android:name=".Forms.GroupOperationsActivity">
         </activity>
     </application>
 
