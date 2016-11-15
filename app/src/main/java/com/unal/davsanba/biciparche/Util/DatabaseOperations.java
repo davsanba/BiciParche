@@ -1,7 +1,5 @@
 package com.unal.davsanba.biciparche.Util;
 
-import android.content.Context;
-import android.util.Log;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
 import com.unal.davsanba.biciparche.Data.FirebaseReferences;
@@ -75,6 +73,25 @@ public class DatabaseOperations {
     }
 
 
+    public void removeRoute(Route mCurrentRoute) {
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference(FirebaseReferences.DATABASE_REFERENCE)
+                .child(FirebaseReferences.ROUTE_REFERENCE).child(mCurrentRoute.getRouteID());
+        mDatabaseReference.removeValue();
+    }
 
+    public void upDateRoute(Route route) {
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference(FirebaseReferences.DATABASE_REFERENCE)
+                .child(FirebaseReferences.ROUTE_REFERENCE).child(route.getRouteID());
 
+        Map<String, Object> routeUpate = new HashMap<String, Object>();
+
+        routeUpate.put(FirebaseReferences.ROUTE_OWNER_ID_KEY , route.getRouteOwnerID());
+        routeUpate.put(FirebaseReferences.ROUTE_NAME_KEY     , route.getRouteName());
+        routeUpate.put(FirebaseReferences.ROUTE_DAYS_KEY     , route.getRouteDays());
+        routeUpate.put(FirebaseReferences.ROUTE_HOUR_KEY     , route.getRouteHour());
+        routeUpate.put(FirebaseReferences.ROUTE_START_KEY    , route.getRouteStart());
+        routeUpate.put(FirebaseReferences.ROUTE_END_KEY      , route.getRouteEnd());
+        routeUpate.put(FirebaseReferences.ROUTE_MARKS_KEY    , route.getRouteMarks());
+        mDatabaseReference.updateChildren(routeUpate);
+    }
 }

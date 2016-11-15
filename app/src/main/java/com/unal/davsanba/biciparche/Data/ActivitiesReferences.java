@@ -16,4 +16,11 @@ public class ActivitiesReferences {
     public static final String EXTRA_PROFILE_UPDATE = "Update_Profile";
     public static final String EXTRA_PROFILE_SHOW = "Show_Profile";
 
+    public static final String EXTRA_ROUTE_CREATE_UPDATE        = "Route_Extras";
+    public static final String EXTRA_ROUTE                      = "Route_Put";
+    public static final String EXTRA_ROUTE_CREATE               = "Create_Route";
+    public static final String EXTRA_ROUTE_UPDATE               = "Update_Route";
+
+
+
 }

@@ -19,12 +19,13 @@ public class FirebaseReferences {
     public static final String USER_PHONENUMBER_KEY = "user_phone_number";
     public static final String USER_PHOTO_KEY       = "user_photoUrl";
 
-    public static final String ROUTE_OWNER_ID_KEY   = "route_owner_id";
-    public static final String ROUTE_NAME_KEY       = "route_name";
-    public static final String ROUTE_DAYS_KEY       = "route_days";
-    public static final String ROUTE_HOUR_KEY       = "route_hour";
-    public static final String ROUTE_START_KEY      = "route_start";
-    public static final String ROUTE_END_KEY        = "route_end";
+    public static final String ROUTE_OWNER_ID_KEY   = "routeOwnerID";
+    public static final String ROUTE_NAME_KEY       = "routeName";
+    public static final String ROUTE_DAYS_KEY       = "routeDays";
+    public static final String ROUTE_HOUR_KEY       = "routeHour";
+    public static final String ROUTE_START_KEY      = "routeStart";
+    public static final String ROUTE_END_KEY        = "routeEnd";
+    public static final String ROUTE_MARKS_KEY      = "routeMarks";
 
     public static class SearchUserActivity extends AppCompatActivity {
 

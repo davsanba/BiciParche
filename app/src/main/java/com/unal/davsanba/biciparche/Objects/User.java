@@ -51,6 +51,29 @@ public class User implements Parcelable {
     }
 
 
+    protected User(Parcel in) {
+        name = in.readString();
+        username = in.readString();
+        photoUrl = in.readString();
+        department = in.readString();
+        career = in.readString();
+        phoneNumber = in.readString();
+        userRoutes = in.createTypedArrayList(Route.CREATOR);
+        userGroups = in.createTypedArrayList(Group.CREATOR);
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
+
     public String getName() {
         return name;
     }
@@ -116,11 +139,10 @@ public class User implements Parcelable {
     }
 
     @Override
-    public int describeContents() { return 0; }
+    public int describeContents() {
+        return 0;
+    }
 
-    /**
-     * Storing the Student data to Parcel object
-     **/
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
@@ -129,31 +151,8 @@ public class User implements Parcelable {
         dest.writeString(department);
         dest.writeString(career);
         dest.writeString(phoneNumber);
+        dest.writeTypedList(userRoutes);
+        dest.writeTypedList(userGroups);
     }
-
-
-    private User(Parcel in) {
-        this.name = in.readString();
-        this.username = in.readString();
-        this.photoUrl = in.readString();
-        this.department = in.readString();
-        this.career = in.readString();
-        this.phoneNumber = in.readString();
-
-    }
-
-
-    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
-
-        @Override
-        public User createFromParcel(Parcel source) {
-            return new User(source);
-        }
-
-        @Override
-        public User[] newArray(int size) {
-            return new User[size];
-        }
-    };
 }
 
