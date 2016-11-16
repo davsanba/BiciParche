@@ -85,6 +85,12 @@
     <string name="btn_text_group_leave">Salir del grupo</string>
     <string name="user_not_found">Usuario no existe</string>
 
+    <!-- Strings Menu-->
+    
+    <string name="menu_terms_and_conditions">Terminos y condiciones</string>;
+    <string name="menu_privacy">Politica de Privacidad</string>;
+
+
 
 
 </resources>

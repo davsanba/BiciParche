@@ -1,7 +1,9 @@
 package com.unal.davsanba.biciparche.Util;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.*;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.unal.davsanba.biciparche.Data.FbRef;
 import com.unal.davsanba.biciparche.Objects.Group;
 import com.unal.davsanba.biciparche.Objects.Route;
@@ -94,12 +96,17 @@ public class DatabaseOperations {
         Map<String, Object> groupCreate = new HashMap<String, Object>();
         groupCreate.put(FbRef.GROUP_NAME_KEY     , group.getGroupName());
         groupCreate.put(FbRef.GROUP_ROUTE_ID_KEY , route.getRouteID());
-        groupCreate.put(FbRef.GROUP_USERS_ID_KEY , users);
+        //groupCreate.put(FbRef.GROUP_USERS_ID_KEY , users);
         groupCreate.put(FbRef.GROUP_ADMIN_ID_KEY , group.getGroupAdminUserID());
-
         mDatabaseReference.updateChildren(groupCreate);
 
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference(FbRef.DATABASE_REFERENCE)
+                .child(FbRef.LIST_REFERENCE).child(group.getGroupId());
+        mDatabaseReference.setValue(users);
 
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference(FbRef.DATABASE_REFERENCE)
+                .child(FbRef.USER_REFERENCE).child(group.getGroupAdminUserID()).child(USER_ROUTES_KEY).child(group.getGroupId());
+        mDatabaseReference.setValue(true);
     }
 
 
@@ -124,4 +131,17 @@ public class DatabaseOperations {
         routeUpate.put(FbRef.ROUTE_MARKS_KEY    , route.getRouteMarks());
         mDatabaseReference.updateChildren(routeUpate);
     }
+
+
+    public static Group groupFromSnapshot(DataSnapshot postSnapshot) {
+        Group group = new Group(
+                postSnapshot.getKey(),
+                postSnapshot.child(FbRef.GROUP_NAME_KEY).getValue().toString(),
+                postSnapshot.child(FbRef.GROUP_ROUTE_ID_KEY).getValue().toString(),
+                postSnapshot.child(FbRef.GROUP_ADMIN_ID_KEY).getValue().toString()
+        );
+
+        return group;
+    }
+
 }

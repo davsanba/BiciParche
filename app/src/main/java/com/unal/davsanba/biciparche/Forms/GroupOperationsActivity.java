@@ -1,14 +1,13 @@
 package com.unal.davsanba.biciparche.Forms;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.DialogFragment;
+import android.app.*;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,19 +18,20 @@ import com.google.firebase.database.*;
 import com.unal.davsanba.biciparche.Data.ActRefs;
 import com.unal.davsanba.biciparche.Data.FbRef;
 import com.unal.davsanba.biciparche.Objects.Group;
+import com.unal.davsanba.biciparche.Objects.ListAdapters.UserListAdapter;
 import com.unal.davsanba.biciparche.Objects.Route;
 import com.unal.davsanba.biciparche.Objects.User;
 import com.unal.davsanba.biciparche.R;
 import com.unal.davsanba.biciparche.Util.DatabaseOperations;
 import com.unal.davsanba.biciparche.Util.MultiSelectionSpinner;
-import com.unal.davsanba.biciparche.Util.TimePickerFragment;
+import com.unal.davsanba.biciparche.Util.UserOperationsManager;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class GroupOperationsActivity extends AppCompatActivity implements View.OnClickListener{
+public class GroupOperationsActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener{
 
     private ArrayList<LatLng> mMarkerPoints;
     private ArrayList<String> mGroupUsersId;
@@ -84,7 +84,10 @@ public class GroupOperationsActivity extends AppCompatActivity implements View.O
         String time = timeF.format(Calendar.getInstance().getTime());
         mRouteTimeField.setText(time);
 
-        mRouteDaysSpinner = (MultiSelectionSpinner) findViewById(R.id.day_selection_spinner);
+        mGroupUsersView = (ListView) findViewById(R.id.listView_show_members);
+        mGroupUsersView.setOnItemClickListener(this);
+
+                mRouteDaysSpinner = (MultiSelectionSpinner) findViewById(R.id.day_selection_spinner);
         mRouteDaysSpinner.setItems(getResources().getStringArray(R.array.week_days));
 
         mAuth = FirebaseAuth.getInstance();
@@ -99,15 +102,17 @@ public class GroupOperationsActivity extends AppCompatActivity implements View.O
             mCurrentGroup = getIntent().getParcelableExtra(ActRefs.EXTRA_GROUP);
             mCurrentRoute = mCurrentGroup.getGroupRoute();
             fill();
+        }else{
+            mGroupUsersId.add(mAuth.getCurrentUser().getUid());
+            addUserById(mAuth.getCurrentUser().getUid());
         }
-
-
     }
 
     private void fill() {
         mGroupNameField.setText(mCurrentGroup.getGroupName());
         mRouteTimeField.setText(mCurrentRoute.getRouteHour());
         mGroupUsersId = (ArrayList<String>) mCurrentGroup.getGroupUsers();
+        loadGroupUsers();
         if(!mCurrentGroup.getGroupAdminUserID().equals(mAuth.getCurrentUser().getUid())){
             mGroupNameField.setEnabled(false);
             mRouteTimeField.setEnabled(false);
@@ -134,7 +139,7 @@ public class GroupOperationsActivity extends AppCompatActivity implements View.O
                 break;
 
             case R.id.btn_show_time_picker:
-                DialogFragment newFragment = new TimePickerFragment();
+                DialogFragment newFragment = new TimePickerFragmentG();
                 newFragment.show(getFragmentManager(),"TimePicker");
                 break;
 
@@ -145,7 +150,45 @@ public class GroupOperationsActivity extends AppCompatActivity implements View.O
         }
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (parent.getId() == R.id.listView_show_members) {
+            UserOperationsManager uOp = new UserOperationsManager(getApplicationContext());
+            User cUser = (User) parent.getAdapter().getItem(position);
+            Intent update  = new Intent(getApplicationContext(), ProfileOperationsActivity.class);
+            update.putExtra(ActRefs.EXTRA_CREATE_UPDATE_SHOW, ActRefs.EXTRA_SHOW);
+            update.putExtra(ActRefs.EXTRA_USER,cUser);
+            startActivity(update);
+        }
+    }
+
     private void leaveGroup() {
+    }
+
+    public void printGroupUsers(){
+        UserListAdapter adapter = new UserListAdapter(getApplicationContext(), mGroupUsers);
+        mGroupUsersView.setAdapter(adapter);
+    }
+
+    public void loadGroupUsers(){
+        DatabaseReference cRef = mDatabaseReference.child(FbRef.LIST_REFERENCE);
+        Query query = cRef.orderByKey().equalTo(mCurrentGroup.getGroupId());
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    for(DataSnapshot ds : postSnapshot.getChildren()){
+                        Log.d(TAG, ds.getValue().toString());
+                        addUserById(ds.getValue().toString());
+                    }
+                }
+                UserListAdapter adapter = new UserListAdapter(getApplicationContext(), mGroupUsers);
+                mGroupUsersView.setAdapter(adapter);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
     }
 
     private void validateAndCreate(){
@@ -237,25 +280,19 @@ public class GroupOperationsActivity extends AppCompatActivity implements View.O
 
                     public void onClick(DialogInterface dialog,int id) {
                         String mail = userInput.getText().toString();
-                        if (mail.length() > 3) {
-                            mDatabaseReference = mDatabaseReference.child(FbRef.USER_REFERENCE);
-                            Query query = mDatabaseReference.orderByChild(FbRef.USER_USERNAME_KEY).equalTo(mail);
-                            Log.d(TAG,mail + " " + mDatabaseReference);
+                        if (mail.length() > 5) {
+                            DatabaseReference cRef = mDatabaseReference.child(FbRef.USER_REFERENCE);
+                            Query query = cRef.orderByChild(FbRef.USER_USERNAME_KEY).startAt(mail);
                             query.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     if(dataSnapshot.exists()) {
                                         for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                                            mGroupUsers.add(new User(postSnapshot.child(FbRef.USER_NAME_KEY).getValue().toString(),
-                                                    postSnapshot.child(FbRef.USER_USERNAME_KEY).getValue().toString(),
-                                                    postSnapshot.child(FbRef.USER_PHOTO_KEY).getValue().toString(),
-                                                    postSnapshot.child(FbRef.USER_DEPARTMENT_KEY).getValue().toString(),
-                                                    postSnapshot.child(FbRef.USER_CAREER_KEY).getValue().toString(),
-                                                    postSnapshot.child(FbRef.USER_PHONENUMBER_KEY).getValue().toString()
-                                            ));
+                                            mGroupUsers.add(UserOperationsManager.userFromDataSnapshot(postSnapshot));
                                             mGroupUsersId.add(postSnapshot.getKey());
                                             break;
                                         }
+                                        printGroupUsers();
                                     }else{
                                         Toast.makeText(context, R.string.user_not_found, Toast.LENGTH_SHORT).show();
                                     }
@@ -269,6 +306,50 @@ public class GroupOperationsActivity extends AppCompatActivity implements View.O
                     }
                 }).create()
                 .show();
+    }
+
+    public void addUserById(String userID){
+        Query query =  mDatabaseReference.child(FbRef.USER_REFERENCE).orderByKey().equalTo(userID);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    mGroupUsers.add(UserOperationsManager.userFromDataSnapshot(postSnapshot));
+                    break;
+                }
+                printGroupUsers();
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+    public static class TimePickerFragmentG extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
+
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            //Use the current time as the default values for the time picker
+            final Calendar c = Calendar.getInstance();
+            int hour = c.get(Calendar.HOUR_OF_DAY);
+            int minute = c.get(Calendar.MINUTE);
+
+            //Create and return a new instance of TimePickerDialog
+            return new TimePickerDialog(getActivity(), this, hour, minute,
+                    DateFormat.is24HourFormat(getActivity()));
+        }
+
+        //onTimeSet() callback method
+        @Override
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            //Do something with the user chosen time
+            //Get reference of host activity (XML Layout File) TextView widget
+            EditText tv = (EditText) getActivity().findViewById(R.id.field_group_time);
+            //Set a message for user
+            String str = String.format("%02d:%02d", hourOfDay, minute);
+            tv.setText(str);
+        }
     }
 
 }

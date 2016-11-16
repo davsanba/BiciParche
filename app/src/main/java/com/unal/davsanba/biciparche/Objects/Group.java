@@ -2,6 +2,10 @@ package com.unal.davsanba.biciparche.Objects;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
+import com.google.firebase.database.*;
+import com.unal.davsanba.biciparche.Data.FbRef;
+import com.unal.davsanba.biciparche.Util.RouteOperationsManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,11 +16,10 @@ import java.util.List;
 public class Group implements Parcelable {
 
     private String      groupId;
-    private String      groupName;
-    private Route  groupRoute;
-    private List<String>  groupUsers;
-    private String      groupAdminUserID;
-
+    private String       groupName;
+    private Route        groupRoute;
+    private List<String> groupUsers;
+    private String       groupAdminUserID;
     public Group() {    }
 
     public Group(String groupId, String groupName, Route groupRoute, List<String> groupUsers, String groupAdminUserID) {
@@ -39,6 +42,54 @@ public class Group implements Parcelable {
         this.groupUsers = groupUsers;
         this.groupAdminUserID = groupAdminUserID;
     }
+
+    public Group(String groupId, String groupName, String groupRouteID, String groupAdminUserID){
+        this.groupId = groupId;
+        this.groupName = groupName;
+        getRouteFromId(groupRouteID);
+        groupUsers = new ArrayList<>();
+        getUsersFromId(groupId);
+        this.groupAdminUserID = groupAdminUserID;
+    }
+
+    private void getRouteFromId(String groupRouteID) {
+        DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference(FbRef.DATABASE_REFERENCE);
+        Query query = mDatabaseReference.child(FbRef.ROUTE_REFERENCE).orderByKey().equalTo(groupRouteID);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+
+                    groupRoute= RouteOperationsManager.RouteFromSnapshot(postSnapshot);
+                    break;
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {  }
+        });
+    }
+
+    private void getUsersFromId(String groupId) {
+        final DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference(FbRef.DATABASE_REFERENCE);
+        Query query = mDatabaseReference.child(FbRef.LIST_REFERENCE).orderByKey().equalTo(groupId);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()) {
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        for(DataSnapshot s : postSnapshot.getChildren())
+                        {
+                            groupUsers.add(s.getValue().toString());
+                        }
+
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {  }
+        });
+    }
+
 
     public void addUser(String user){
         groupUsers.add(user);

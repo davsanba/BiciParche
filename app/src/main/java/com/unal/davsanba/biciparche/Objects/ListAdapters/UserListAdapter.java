@@ -48,10 +48,10 @@ public class UserListAdapter  extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View v = View.inflate(mContext, R.layout.personal_route_list, null);
+        View v = View.inflate(mContext, R.layout.user_list, null);
 
         User cUser = mUserList.get(position);
-
+        Log.d(TAG, cUser.getName());
         ImageView mMapPreview = (ImageView) v.findViewById(R.id.image_user_preview);
 
         new DownloadImageTask(mMapPreview).execute(cUser.getPhotoUrl());
@@ -60,13 +60,12 @@ public class UserListAdapter  extends BaseAdapter {
         TextView mUserMail = (TextView) v.findViewById(R.id.static_user_list_mail);
         TextView mUserCareer = (TextView) v.findViewById(R.id.static_user_list_career);
 
-         mUserName.setText(cUser.getName());
-         mUserMail.setText(cUser.getUsername());
-         mUserCareer.setText(cUser.getCareer());
+        mUserName.setText(cUser.getName());
+        mUserMail.setText(cUser.getUsername());
+        mUserCareer.setText(cUser.getCareer());
 
 
         v.setTag(cUser.getUsername());
-
         return v;
     }
 

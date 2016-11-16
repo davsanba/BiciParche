@@ -43,7 +43,7 @@ public class GroupListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        View v = View.inflate(mContext, R.layout.personal_route_list, null);
+        View v = View.inflate(mContext, R.layout.group_list, null);
 
         Group cGroup = mGroupList.get(position);
 
@@ -53,9 +53,9 @@ public class GroupListAdapter extends BaseAdapter {
         TextView mGroupCount = (TextView) v.findViewById(R.id.static_group_list_users);
 
         mGroupName.setText(cGroup.getGroupName());
-        mGroupDays.setText(mContext.getString(R.string.static_list_group_day)+ cGroup.getGroupRoute().getRouteDays());
-        mGroupHour.setText(mContext.getString(R.string.static_list_group_hour) + cGroup.getGroupRoute().getRouteHour());
-        mGroupCount.setText(mContext.getString(R.string.static_list_group_members) + cGroup.getGroupUsers().size());
+        //mGroupDays.setText(mContext.getString(R.string.static_list_group_day)+ cGroup.getGroupRoute().getRouteDays());
+        //mGroupHour.setText(mContext.getString(R.string.static_list_group_hour) + cGroup.getGroupRoute().getRouteHour());
+        //mGroupCount.setText(mContext.getString(R.string.static_list_group_members) + cGroup.getGroupUsers().size());
 
 
         v.setTag(cGroup.getGroupId());

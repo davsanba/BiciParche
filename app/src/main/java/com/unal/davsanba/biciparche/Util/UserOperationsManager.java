@@ -128,4 +128,15 @@ public class UserOperationsManager {
                     }
                 });
     }
+
+
+    public static User userFromDataSnapshot(DataSnapshot postSnapshot){
+        return new User(postSnapshot.child(FbRef.USER_NAME_KEY).getValue().toString(),
+                postSnapshot.child(FbRef.USER_USERNAME_KEY).getValue().toString(),
+                postSnapshot.child(FbRef.USER_PHOTO_KEY).getValue().toString(),
+                postSnapshot.child(FbRef.USER_DEPARTMENT_KEY).getValue().toString(),
+                postSnapshot.child(FbRef.USER_CAREER_KEY).getValue().toString(),
+                postSnapshot.child(FbRef.USER_PHONENUMBER_KEY).getValue().toString());
+    }
+
 }

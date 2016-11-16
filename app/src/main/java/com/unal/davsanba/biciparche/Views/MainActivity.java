@@ -16,9 +16,12 @@ import com.unal.davsanba.biciparche.Data.ActRefs;
 import com.unal.davsanba.biciparche.Data.FbRef;
 import com.unal.davsanba.biciparche.Forms.GroupOperationsActivity;
 import com.unal.davsanba.biciparche.Forms.NewPersonalRouteActivity;
+import com.unal.davsanba.biciparche.Objects.Group;
+import com.unal.davsanba.biciparche.Objects.ListAdapters.GroupListAdapter;
 import com.unal.davsanba.biciparche.Objects.ListAdapters.PersonalListAdapter;
 import com.unal.davsanba.biciparche.Objects.Route;
 import com.unal.davsanba.biciparche.R;
+import com.unal.davsanba.biciparche.Util.DatabaseOperations;
 import com.unal.davsanba.biciparche.Util.RouteOperationsManager;
 
 import java.util.ArrayList;
@@ -35,6 +38,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ListView mShowRouteLv;
     private ListView mShowGroupLv;
 
+    private ArrayList<Group> mUserGroups;
+
     private static final String TAG = "Main_activity";
 
     @Override
@@ -44,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance();
-        mDatabaseReference = mDatabase.getReference(FbRef.DATABASE_REFERENCE).child(FbRef.ROUTE_REFERENCE);
+        mDatabaseReference = mDatabase.getReference(FbRef.DATABASE_REFERENCE);
 
         mShowRouteLv = (ListView) findViewById(R.id.listView_main_route);
         mShowRouteLv.setOnItemClickListener(this);
@@ -58,9 +63,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mNewGroupBtn = (Button) findViewById(R.id.btn_new_group);
         mNewGroupBtn.setOnClickListener(this);
 
-        printUserRoutes();
+        mUserGroups = new ArrayList<>();
 
+        printUserGroups();
+        printUserRoutes();
     }
+
 
     @Override
     public void onClick(View v) {
@@ -93,37 +101,77 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }else if(parent.getId() == R.id.listView_main_group){
 
-
+            Group cGroup = (Group) parent.getAdapter().getItem(position);
+            Log.d(TAG, String.valueOf(cGroup.getGroupRoute() == null));
+            Intent i = new Intent(MainActivity.this, GroupOperationsActivity.class);
+            i.putExtra(ActRefs.EXTRA_CREATE_UPDATE_SHOW, ActRefs.EXTRA_UPDATE);
+            i.putExtra(ActRefs.EXTRA_GROUP, cGroup);
+            startActivity(i);
         }
-
     }
-
+/*
     private void printUserGroups() {
-
+      Query query = mDatabaseReference.child(FbRef.USER_REFERENCE).child(mAuth.getCurrentUser().getUid()).child(FbRef.USER_ROUTES_KEY).orderByKey();
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+               for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                   getUserGroups(postSnapshot.getKey());
+                }
+                GroupListAdapter adapter = new GroupListAdapter(getApplicationContext(), mUserGroups);
+                mShowGroupLv.setAdapter(adapter);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
     }
 
-    public void printUserRoutes(){
-        Query query = mDatabaseReference.orderByChild(FbRef.ROUTE_OWNER_ID_KEY)
+    private void getUserGroups(String groupId) {
+        Query query = mDatabaseReference.child(FbRef.GROUP_REFERENCE).orderByKey().equalTo(groupId);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d(TAG, "entra aqui? : " + dataSnapshot.getChildrenCount());
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    mUserGroups.add(DatabaseOperations.groupFromSnapshot(postSnapshot));
+                    Log.d(TAG, String.valueOf(mUserGroups.size()));
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {  }
+        });
+    }
+*/
+    public void printUserGroups() {
+        Query query = mDatabaseReference.child(FbRef.GROUP_REFERENCE).orderByChild(FbRef.GROUP_ADMIN_ID_KEY)
                 .equalTo(mAuth.getCurrentUser().getUid());
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d(TAG,String.valueOf(dataSnapshot.getChildrenCount()));
+                Log.d(TAG, "hola " + String.valueOf(dataSnapshot.getChildrenCount()));
+                ArrayList<Group> groups = new ArrayList<>();
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    groups.add(DatabaseOperations.groupFromSnapshot(postSnapshot));
+                }
+                GroupListAdapter adapter = new GroupListAdapter(getApplicationContext(), groups);
+                mShowGroupLv.setAdapter(adapter);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {  }
+        });
+    }
+
+
+    public void printUserRoutes(){
+        Query query = mDatabaseReference.child(FbRef.ROUTE_REFERENCE).orderByChild(FbRef.ROUTE_OWNER_ID_KEY)
+                .equalTo(mAuth.getCurrentUser().getUid());
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
                 ArrayList<Route> routes = new ArrayList<>();
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-
-                    Route route = new Route(
-                            postSnapshot.getKey(),
-                            postSnapshot.child(FbRef.ROUTE_OWNER_ID_KEY).getValue().toString(),
-                            postSnapshot.child(FbRef.ROUTE_NAME_KEY).getValue().toString(),
-                            postSnapshot.child(FbRef.ROUTE_DAYS_KEY).getValue().toString(),
-                            postSnapshot.child(FbRef.ROUTE_HOUR_KEY).getValue().toString(),
-                            RouteOperationsManager.strToLatLng(postSnapshot.child(FbRef.ROUTE_START_KEY)),
-                            RouteOperationsManager.strToLatLng(postSnapshot.child(FbRef.ROUTE_END_KEY)),
-                            RouteOperationsManager.toLatLngList(postSnapshot.child(FbRef.ROUTE_MARKS_KEY))
-                            );
-                    routes.add(route);
-
+                    routes.add(RouteOperationsManager.RouteFromSnapshot(postSnapshot));
                 }
                 PersonalListAdapter adapter = new PersonalListAdapter(getApplicationContext(), routes);
                 mShowRouteLv.setAdapter(adapter);
@@ -139,10 +187,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == ActRefs.RC_NEW_PERSONAL_ROUTE) {
             if (resultCode == Activity.RESULT_OK) {
-                printUserRoutes();
                 Route newRoute = data.getParcelableExtra("route");
                 String text = getString(R.string.toast_route_created) + newRoute.getRouteName();
                 Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
@@ -152,13 +198,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         if (requestCode == ActRefs.RC_CREATE_GROUP) {
             if (resultCode == Activity.RESULT_OK) {
-                printUserGroups();
+
                 Toast.makeText(MainActivity.this, getString(R.string.toast_group_created), Toast.LENGTH_SHORT).show();
             }else{
                 Toast.makeText(MainActivity.this, R.string.toast_error_route_not_created, Toast.LENGTH_SHORT).show();
             }
         }
-
     }
 
 }

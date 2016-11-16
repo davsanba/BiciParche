@@ -7,6 +7,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.unal.davsanba.biciparche.Data.FbRef;
+import com.unal.davsanba.biciparche.Objects.Route;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,21 +31,35 @@ public class RouteOperationsManager {
         mDatabaseReference = mDatabase.getReference(FbRef.DATABASE_REFERENCE).child(FbRef.ROUTE_REFERENCE);
     }
 
-    public static LatLng strToLatLng(DataSnapshot data){
+    public static LatLng strToLatLng(DataSnapshot data) {
         Double lat = (Double) data.child("latitude").getValue();
         Double lng = (Double) data.child("longitude").getValue();
-        return new LatLng(lat,lng);
+        return new LatLng(lat, lng);
     }
 
-    public static List<LatLng> toLatLngList(DataSnapshot data){
+    public static List<LatLng> toLatLngList(DataSnapshot data) {
         ArrayList<LatLng> list = new ArrayList<>();
-        if(data != null) {
+        if (data != null) {
             for (DataSnapshot a : data.getChildren()) {
-            Double lat = (Double) a.child("latitude").getValue();
-            Double lng = (Double) a.child("longitude").getValue();
-            list.add(new LatLng(lat,lng));
+                Double lat = (Double) a.child("latitude").getValue();
+                Double lng = (Double) a.child("longitude").getValue();
+                list.add(new LatLng(lat, lng));
             }
         }
         return list;
     }
+
+    public static Route RouteFromSnapshot(DataSnapshot postSnapshot) {
+        return new Route(
+                postSnapshot.getKey(),
+                postSnapshot.child(FbRef.ROUTE_OWNER_ID_KEY).getValue().toString(),
+                postSnapshot.child(FbRef.ROUTE_NAME_KEY).getValue().toString(),
+                postSnapshot.child(FbRef.ROUTE_DAYS_KEY).getValue().toString(),
+                postSnapshot.child(FbRef.ROUTE_HOUR_KEY).getValue().toString(),
+                strToLatLng(postSnapshot.child(FbRef.ROUTE_START_KEY)),
+                strToLatLng(postSnapshot.child(FbRef.ROUTE_END_KEY)),
+                toLatLngList(postSnapshot.child(FbRef.ROUTE_MARKS_KEY))
+        );
+    }
 }
+
