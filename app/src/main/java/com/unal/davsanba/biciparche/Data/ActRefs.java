@@ -19,7 +19,6 @@ public class ActRefs {
     public static final String EXTRA_ROUTE  = "Extra_Route";
     public static final String EXTRA_GROUP  = "Extra_Group";
 
-
-
-
+    public static final String EXTRA_TERMS  = "Extra_Terms";
+    public static final String EXTRA_PRIVACY= "Extra_Privacy";
 }

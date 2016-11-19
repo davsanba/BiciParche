@@ -78,19 +78,109 @@
 
     <!-- Strings create group-->
 
-    <string name="static_list_group_members">No de usuarios: </string>
-    <string name="static_group_users">Usuarios: </string>
-    <string name="static_list_group_hour">Hora: </string>
-    <string name="static_list_group_day">Dias: </string>
+    <string name="static_list_group_members">No de usuarios:</string>
+    <string name="static_group_users">Usuarios:</string>
+    <string name="static_list_group_hour">Hora:</string>
+    <string name="static_list_group_day">Dias:</string>
     <string name="btn_text_group_leave">Salir del grupo</string>
     <string name="user_not_found">Usuario no existe</string>
 
     <!-- Strings Menu-->
-    
-    <string name="menu_terms_and_conditions">Terminos y condiciones</string>;
-    <string name="menu_privacy">Politica de Privacidad</string>;
+
+    <string name="menu_settings">Configuración</string>
+    <string name="menu_terms_and_conditions">Terminos y condiciones</string>
+    <string name="menu_privacy">Politica de Privacidad</string>
+    <string name="menu_edoit_profile">Editar mi Perfil</string>
 
 
+    <!-- Strings Menu-->
+    <string name="terms_condition_content">
+        Al acceder y hacer uso de la plataforma BiciParche UN, el usuario acepta los términos y condiciones descritos a
+        continuación y se compromete a cumplirlos. De igual manera acepta cumplir con la normatividad vigente según la
+        legislación colombiana.
+        I. Objeto
+        BiciParche UN es un sistema que permite compartir rutas en bicicleta para estudiantes de la Universidad
+        Nacional, en donde se opte por mejorar la movilidad en la ciudad de Bogotá, con posible crecimiento de la
+        cobertura, ahorro de tiempo en cuanto al desplazamiento de un lugar a otro y que a la vez sea amigable con el
+        medio ambiente.
+        Ofreciendo una mejor oportunidad de mejorar la seguridad y hacer amigos, con facilidad de acceso. Una aplicación
+        permitirá a las personas compartir información fácilmente y ponerse en contacto sin gastar mucho tiempo.
+        II. Definiciones
+        BiciParche UN
+        BiciParche UN es una (aplicación informática móvil) perteneciente a un grupo de 4 estudiantes de la Universidad
+        Nacional de Colombia, que conecta a usuarios de bicicleta que compartan un mismo destino.
+        Usuario
+        Se refiere a un miembro perteneciente a la Universidad Nacional de Colombia, que acepta los términos y
+        condiciones de uso, siendo éste un usuario registrado.
+        Ruta
+        Se define como un camino determinado que va de un sitio a otro previsto para un viaje, las rutas se calcularan
+        de acuerdo a las coordenadas que el usuario digite de inicio y final del trayecto.
+        III. Grados de Acceso
+        Usuarios No Registrados
+        Se refiere a los usuarios que no han sido registrados y por tanto no han aceptado los términos y condiciones de
+        uso de BiciParche UN, el acceso a la información de usuarios, viajes y grupos de la plataforma web es limitado
+        para este tipo de usuarios.
+        Usuarios Registrados
+        Se refiere a todos los usuarios, que han aceptado los términos y condiciones de uso. Los usuarios registrados
+        tendrán acceso a la información de grupos, ruta y perfiles de usuario.
+        IV. Obligaciones de los usuarios
+        Verificar su relación con la Universidad Nacional
+        Es obligación del usuario su relación con la Universidad a través del correo de dominio Unal.
+        Suministrar información real
+        Los usuarios se comprometen a suministrar información verídica y actualizada. BiciParche UN se reserva el
+        derecho de cancelar cuentas de usuarios con información falsa, dudosa o engañosa.
+        Hacer buen uso de la cuenta
+        Las cuentas de acceso a BiciParche UN son única y exclusivamente para agendar y crear rutas de viajes en
+        bicicleta, cualquier otro uso es prohibido.
+        VI. Reglas de convivencia
+        Publicar viajes reales
+        Los usuarios se comprometen a publicar viajes que estén seguros de realizar.
+        Respetar al otro
+        Todos los usuarios deben ser tratados con dignidad y respeto. Se deben evitar conductas que molesten a las demás
+        personas que comparten la ruta.
+        Presentarse a tiempo
+        Los usuarios se comprometen a presentarse en el sitio pactado al menos 10 minutos antes de la hora acordada, los
+        usuarios de la ruta tendrán un tiempo de espera máximo de 10 minutos, pasado este tiempo se asume que el usuario
+        no viajará con este parche.
+        VII. Responsabilidad de BiciParche UN
+        Confidencialidad de datos
+        BiciParche UN utiliza solo un tipo de acceso para el registro de usuarios en su plataforma:
+        1. A través del correo institucional de la Universidad Nacional, esta herramienta garantiza la relación del
+        usuario con la Universidad y que la cuenta pertenece a una persona real.
+        BiciParche Un se compromete a mantener la confidencialidad de la información de acceso de sus usuarios (usuario
+        y contraseña) y limita su acceso a dicha información para recuperar, modificar, cancelar o realizar el
+        mantenimiento de las cuentas de usuario.
+        Uso de Información
+        Queda prohibido el uso, publicación y/o divulgación de información ofensiva, racista, falsa y/o cualquier tipo
+        de propaganda ajena al propósito de la aplicación. Nos reservamos el derecho a censurar/ eliminar aquellos
+        mensajes que no cumplan con las reglas de convivencia.
+        VIII. Propiedad Intelectual
+        La totalidad de los contenidos de esta página web incluyendo códigos de programación, imágenes, textos,
+        animaciones, nombres, logotipos y tono de colores o cualquier otro elemento de diseño de la plataforma VCC son
+        propiedad de Camilo Andrés Arias, David Barrera, Daniel Fernando Eslava y Jennifer Tatiana Jimenez.
+        IX. Contacto y notificaciones
+        Si tienes dudas acerca de nuestros términos y condiciones, puedes contactarnos en: biciparcheun@gmail.com
+    </string>
 
+    <string name="privacy_content">
+        Nuestra política de privacidad busca informar a nuestros usuarios sobre el uso que le damos a la "Información
+        personal" de cada usuario en la red. Por favor lea nuestra política de privacidad cuidadosamente para entender
+        como recolectamos, usamos, protegemos y manejamos su información personal a través de la plataforma.\n
+        ¿Qué información recolectamos de nuestros usuarios?\n
+        Al registrarse y utilizar la plataforma BiciParche UN es posible que solicitemos información personal tal como
+        nombre, correo electrónico dominio Unal, nombre de la facultad, carrera, y una foto personal.
+
+        ¿Cuándo recolectamos información de nuestros usuarios?
+        Recolectamos información al registrarse en la plataforma de nuestra aplicación móvil.
+
+        ¿Cómo protegemos la información de nuestros usuarios?
+        Mantenemos la información personal de los usuarios en redes seguras. El acceso a estas redes está limitado a
+        pocas personas quienes efectúan actividades de mantenimiento y están obligados a mantener esta información
+        confidencial.
+
+        ¿Por qué recolectamos tu dirección de correo electrónico?:
+        Para crear tu nombre de usuario y verificar tu relación con la Universidad Nacional.
+
+    </string>
 
 </resources>

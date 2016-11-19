@@ -100,6 +100,7 @@ public class CreateRouteActivity extends FragmentActivity implements OnMapReadyC
         autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_fragment);
         autocompleteFragment.setOnPlaceSelectedListener(this);
+
         autocompleteFragment.setHint(getString(R.string.static_create_map_origin));
         autocompleteFragment.setBoundsBias(Bounds.BOGOTA_BOUND);
     }

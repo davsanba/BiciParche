@@ -102,6 +102,34 @@ public class UserOperationsManager {
                 });
     }
 
+    public void EditUserData(){
+        String uId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        Log.d(TAG,uId);
+        mDatabaseReference.child(uId).addListenerForSingleValueEvent(new ValueEventListener() {
+            User user;
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                user = new User(dataSnapshot.child(FbRef.USER_NAME_KEY).getValue().toString(),
+                        dataSnapshot.child(FbRef.USER_USERNAME_KEY).getValue().toString(),
+                        dataSnapshot.child(FbRef.USER_PHOTO_KEY).getValue().toString(),
+                        dataSnapshot.child(FbRef.USER_DEPARTMENT_KEY).getValue().toString(),
+                        dataSnapshot.child(FbRef.USER_CAREER_KEY).getValue().toString(),
+                        dataSnapshot.child(FbRef.USER_PHONENUMBER_KEY).getValue().toString()
+                );
+                Log.d(TAG, "usuario " + user.getPhoneNumber() + " " + user.getDepartment());
+                Intent update  = new Intent(context, ProfileOperationsActivity.class);
+                update.putExtra(ActRefs.EXTRA_CREATE_UPDATE_SHOW, ActRefs.EXTRA_UPDATE);
+                update.putExtra(ActRefs.EXTRA_USER,user);
+                context.startActivity(update);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     private void updateUserData(){
         mDatabaseReference.child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(
                 new ValueEventListener() {

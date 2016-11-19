@@ -1,14 +1,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <!-- "Mark Favorite", should appear as action button if possible -->
-    <item
-            android:id="@+id/terms_and_conditions"
-            android:title="@string/menu_terms_and_conditions"
-           />
-
-    <!-- Settings, should always be in the overflow -->
-    <item android:id="@+id/privacy"
-          android:title="@string/menu_privacy"
+    <item android:id="@+id/menu_settings"
+          android:title="@string/menu_settings"
+          android:icon="@drawable/settings"
           />
 
 </menu>

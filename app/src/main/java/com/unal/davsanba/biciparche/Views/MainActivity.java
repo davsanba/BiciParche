@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -34,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private Button mNewRouteBtn;
     private Button mNewGroupBtn;
+    private Button mBuscarParche;
 
     private ListView mShowRouteLv;
     private ListView mShowGroupLv;
@@ -57,6 +60,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mShowGroupLv = (ListView) findViewById(R.id.listView_main_group);
         mShowGroupLv.setOnItemClickListener(this);
 
+        mBuscarParche = (Button) findViewById(R.id.btn_search);
+        mBuscarParche.setOnClickListener(this);
+
         mNewRouteBtn = (Button) findViewById(R.id.btn_new_route);
         mNewRouteBtn.setOnClickListener(this);
 
@@ -69,6 +75,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         printUserRoutes();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main,menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.menu_settings:
+                startActivity(new Intent(this, PreferencesActivity.class));
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onClick(View v) {
@@ -85,6 +107,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 cng.putExtra(ActRefs.EXTRA_CREATE_UPDATE_SHOW, ActRefs.EXTRA_CREATE);
                 startActivityForResult(cng, ActRefs.RC_CREATE_GROUP);
                 break;
+
+            case R.id.btn_search:
+                startActivity(new Intent(MainActivity.this, null));
         }
     }
 
@@ -109,40 +134,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(i);
         }
     }
-/*
-    private void printUserGroups() {
-      Query query = mDatabaseReference.child(FbRef.USER_REFERENCE).child(mAuth.getCurrentUser().getUid()).child(FbRef.USER_ROUTES_KEY).orderByKey();
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-               for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                   getUserGroups(postSnapshot.getKey());
-                }
-                GroupListAdapter adapter = new GroupListAdapter(getApplicationContext(), mUserGroups);
-                mShowGroupLv.setAdapter(adapter);
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-    }
-
-    private void getUserGroups(String groupId) {
-        Query query = mDatabaseReference.child(FbRef.GROUP_REFERENCE).orderByKey().equalTo(groupId);
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d(TAG, "entra aqui? : " + dataSnapshot.getChildrenCount());
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    mUserGroups.add(DatabaseOperations.groupFromSnapshot(postSnapshot));
-                    Log.d(TAG, String.valueOf(mUserGroups.size()));
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {  }
-        });
-    }
-*/
     public void printUserGroups() {
         Query query = mDatabaseReference.child(FbRef.GROUP_REFERENCE).orderByChild(FbRef.GROUP_ADMIN_ID_KEY)
                 .equalTo(mAuth.getCurrentUser().getUid());
@@ -183,7 +174,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -198,7 +188,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         if (requestCode == ActRefs.RC_CREATE_GROUP) {
             if (resultCode == Activity.RESULT_OK) {
-
                 Toast.makeText(MainActivity.this, getString(R.string.toast_group_created), Toast.LENGTH_SHORT).show();
             }else{
                 Toast.makeText(MainActivity.this, R.string.toast_error_route_not_created, Toast.LENGTH_SHORT).show();
@@ -206,4 +195,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+/*
+    private void printUserGroups() {
+      Query query = mDatabaseReference.child(FbRef.USER_REFERENCE).child(mAuth.getCurrentUser().getUid()).child(FbRef.USER_ROUTES_KEY).orderByKey();
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+               for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                   getUserGroups(postSnapshot.getKey());
+                }
+                GroupListAdapter adapter = new GroupListAdapter(getApplicationContext(), mUserGroups);
+                mShowGroupLv.setAdapter(adapter);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+    private void getUserGroups(String groupId) {
+        Query query = mDatabaseReference.child(FbRef.GROUP_REFERENCE).orderByKey().equalTo(groupId);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d(TAG, "entra aqui? : " + dataSnapshot.getChildrenCount());
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    mUserGroups.add(DatabaseOperations.groupFromSnapshot(postSnapshot));
+                    Log.d(TAG, String.valueOf(mUserGroups.size()));
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {  }
+        });
+    }
+*/
 }

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference android:title="@string/menu_privacy"
+            android:key="@string/menu_privacy"></Preference>
+    <Preference android:title="@string/menu_terms_and_conditions"
+                android:key="@string/menu_terms_and_conditions"></Preference>
+    <Preference android:title="@string/menu_edoit_profile"
+                android:key="@string/menu_edoit_profile"></Preference>
+
+</PreferenceScreen>
