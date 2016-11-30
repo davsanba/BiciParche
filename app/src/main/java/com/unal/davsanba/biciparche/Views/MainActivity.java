@@ -1,32 +1,42 @@
 package com.unal.davsanba.biciparche.Views;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.*;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
 import com.unal.davsanba.biciparche.Data.ActRefs;
 import com.unal.davsanba.biciparche.Data.FbRef;
 import com.unal.davsanba.biciparche.Forms.GroupOperationsActivity;
 import com.unal.davsanba.biciparche.Forms.NewPersonalRouteActivity;
+import com.unal.davsanba.biciparche.Forms.ProfileOperationsActivity;
 import com.unal.davsanba.biciparche.Objects.Group;
 import com.unal.davsanba.biciparche.Objects.ListAdapters.GroupListAdapter;
 import com.unal.davsanba.biciparche.Objects.ListAdapters.PersonalListAdapter;
+import com.unal.davsanba.biciparche.Objects.ListAdapters.UserListAdapter;
 import com.unal.davsanba.biciparche.Objects.Route;
+import com.unal.davsanba.biciparche.Objects.User;
 import com.unal.davsanba.biciparche.R;
 import com.unal.davsanba.biciparche.Util.DatabaseOperations;
 import com.unal.davsanba.biciparche.Util.RouteOperationsManager;
+import com.unal.davsanba.biciparche.Util.UserOperationsManager;
 
 import java.util.ArrayList;
+
+import static com.unal.davsanba.biciparche.Util.DatabaseOperations.groupFromSnapshot;
+import static java.lang.String.valueOf;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
@@ -45,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private static final String TAG = "Main_activity";
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,11 +65,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mDatabase = FirebaseDatabase.getInstance();
         mDatabaseReference = mDatabase.getReference(FbRef.DATABASE_REFERENCE);
 
+        mUserGroups = new ArrayList<>();
+
         mShowRouteLv = (ListView) findViewById(R.id.listView_main_route);
         mShowRouteLv.setOnItemClickListener(this);
 
+
         mShowGroupLv = (ListView) findViewById(R.id.listView_main_group);
         mShowGroupLv.setOnItemClickListener(this);
+        mShowGroupLv.setAdapter(new GroupListAdapter(getApplicationContext(), mUserGroups));
 
         mBuscarParche = (Button) findViewById(R.id.btn_search);
         mBuscarParche.setOnClickListener(this);
@@ -69,11 +84,135 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mNewGroupBtn = (Button) findViewById(R.id.btn_new_group);
         mNewGroupBtn.setOnClickListener(this);
 
-        mUserGroups = new ArrayList<>();
-
-        printUserGroups();
-        printUserRoutes();
+        new LoadTask().execute();
+        groupsListener();
     }
+
+    private void groupsListener() {
+        mDatabaseReference.child(FbRef.REQUEST_REFERENCE).child(mAuth.getCurrentUser().getUid())
+                .addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                        printPopUp(dataSnapshot.getKey());
+                    }
+                    @Override
+                    public void onChildChanged(DataSnapshot dataSnapshot, String s) { }
+
+                    @Override
+                    public void onChildRemoved(DataSnapshot dataSnapshot) { }
+
+                    @Override
+                    public void onChildMoved(DataSnapshot dataSnapshot, String s) { }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {  }
+                });
+    }
+
+    private void printPopUp(final String key) {
+        final DatabaseReference mDbRef = FirebaseDatabase.getInstance().getReference(FbRef.DATABASE_REFERENCE);
+        final Context context = MainActivity.this;
+        final ArrayList<User> users = new ArrayList<>();
+        final ArrayList<Group> groups = new ArrayList<>();
+
+        LayoutInflater li = LayoutInflater.from(context);
+        View getUsrIdView = li.inflate(R.layout.confirm_group_popup, null);
+
+        AlertDialog.Builder groupConfirm = new AlertDialog.Builder(context);
+        groupConfirm.setView(getUsrIdView);
+        groupConfirm.setTitle("Nueva solcitud de grupo");
+
+        final ListView mPopUpGroupLv = (ListView) getUsrIdView.findViewById(R.id.listView_popup_route);
+        mPopUpGroupLv.setAdapter(new GroupListAdapter(context,groups));
+        mPopUpGroupLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Group cGroup = (Group) parent.getAdapter().getItem(position);
+                Intent i = new Intent(MainActivity.this, GroupOperationsActivity.class);
+                i.putExtra(ActRefs.EXTRA_CREATE_UPDATE_SHOW, ActRefs.EXTRA_SHOW);
+                i.putExtra(ActRefs.EXTRA_GROUP, cGroup);
+                startActivity(i);
+            }
+        });
+
+
+
+        final ListView mPopUpUsrLv = (ListView) getUsrIdView.findViewById(R.id.listView_popup_user);
+        mPopUpUsrLv.setAdapter(new UserListAdapter(context,users));
+        mPopUpUsrLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                User cUser = (User) parent.getAdapter().getItem(position);
+                Intent update  = new Intent(getApplicationContext(), ProfileOperationsActivity.class);
+                update.putExtra(ActRefs.EXTRA_CREATE_UPDATE_SHOW, ActRefs.EXTRA_SHOW);
+                update.putExtra(ActRefs.EXTRA_USER,cUser);
+                startActivity(update);
+            }
+        });
+
+
+        addData(users, groups, mPopUpUsrLv, mPopUpGroupLv, key);
+
+        // set dialog message
+        groupConfirm.setCancelable(true)
+                 .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                     @Override
+                     public void onClick(DialogInterface dialog, int which) {
+                         Query query = mDbRef.child(FbRef.LIST_REFERENCE).child(key);
+                         query.addListenerForSingleValueEvent(new ValueEventListener() {
+                             @Override
+                             public void onDataChange(DataSnapshot dataSnapshot) {
+                                 if (dataSnapshot.exists()) {
+                                     long index = dataSnapshot.getChildrenCount();
+                                     mDbRef.child(FbRef.LIST_REFERENCE).child(key).child(String.valueOf(index))
+                                             .setValue(mAuth.getCurrentUser().getUid());
+                                     mDbRef.child(FbRef.REQUEST_REFERENCE).child(mAuth.getCurrentUser().getUid()).child(key).removeValue();
+                                     mDbRef.child(FbRef.USER_REFERENCE).child(mAuth.getCurrentUser().getUid()).child(FbRef.USER_GROUPS_KEY).child(key).setValue(true);
+                                 }
+                             }
+                             @Override
+                             public void onCancelled(DatabaseError databaseError) { }
+                         });
+                     }
+                 })
+                     .setNegativeButton("Rechazar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mDbRef.child(FbRef.REQUEST_REFERENCE).child(mAuth.getCurrentUser().getUid()).child(key).removeValue();
+                    }
+                });
+        groupConfirm.create().show();
+    }
+
+
+    protected void addData(final ArrayList<User> users, final ArrayList<Group> groups, final ListView userlv, final ListView grouplv, String key){
+        final DatabaseReference mDbRef = FirebaseDatabase.getInstance().getReference(FbRef.DATABASE_REFERENCE);
+        Query qGroup = mDbRef.child(FbRef.GROUP_REFERENCE).child(key);
+        qGroup.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Group g = DatabaseOperations.groupFromSnapshot(dataSnapshot);
+                groups.add(g);
+                GroupListAdapter gl = (GroupListAdapter) grouplv.getAdapter();
+                gl.notifyDataSetChanged();
+                Query qUser = mDbRef.child(FbRef.USER_REFERENCE).child(g.getGroupAdminUserID());
+                qUser.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        users.add(UserOperationsManager.userFromDataSnapshot(dataSnapshot));
+                        UserListAdapter gl = (UserListAdapter) userlv.getAdapter();
+                        gl.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {  }
+                });
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {  }
+        });
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -127,7 +266,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }else if(parent.getId() == R.id.listView_main_group){
 
             Group cGroup = (Group) parent.getAdapter().getItem(position);
-            Log.d(TAG, String.valueOf(cGroup.getGroupRoute() == null));
+            Log.d(TAG, valueOf(cGroup.getGroupRoute() == null));
             Intent i = new Intent(MainActivity.this, GroupOperationsActivity.class);
             i.putExtra(ActRefs.EXTRA_CREATE_UPDATE_SHOW, ActRefs.EXTRA_UPDATE);
             i.putExtra(ActRefs.EXTRA_GROUP, cGroup);
@@ -135,12 +274,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
     public void printUserGroups() {
-        Query query = mDatabaseReference.child(FbRef.GROUP_REFERENCE).orderByChild(FbRef.GROUP_ADMIN_ID_KEY)
+        final ArrayList<Group> groups = new ArrayList<>();
+        Query query = mDatabaseReference.child(FbRef.USER_REFERENCE).child(mAuth.getCurrentUser().getUid())
+                .child(FbRef.USER_GROUPS_KEY).orderByKey();
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(final DataSnapshot ds: dataSnapshot.getChildren()){
+                    Query q = mDatabaseReference.child(FbRef.GROUP_REFERENCE).child(ds.getKey());
+                    q.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            mUserGroups.add(groupFromSnapshot(dataSnapshot));
+                            GroupListAdapter gl = (GroupListAdapter) mShowGroupLv.getAdapter();
+                            gl.notifyDataSetChanged();
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) { }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {  }
+        });
+
+
+        /*
+            Query query = mDatabaseReference.child(FbRef.GROUP_REFERENCE).orderByChild(FbRef.GROUP_ADMIN_ID_KEY)
                 .equalTo(mAuth.getCurrentUser().getUid());
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d(TAG, "hola " + String.valueOf(dataSnapshot.getChildrenCount()));
+                Log.d(TAG, "hola " + valueOf(dataSnapshot.getChildrenCount()));
                 ArrayList<Group> groups = new ArrayList<>();
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     groups.add(DatabaseOperations.groupFromSnapshot(postSnapshot));
@@ -151,6 +317,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onCancelled(DatabaseError databaseError) {  }
         });
+        */
     }
 
 
@@ -193,6 +360,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(MainActivity.this, R.string.toast_error_route_not_created, Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+
+    private class LoadTask extends AsyncTask<Void, Void, Void> {
+
+        public LoadTask( ) {
+        }
+        @Override
+        protected Void doInBackground(Void... params) {
+            printUserRoutes();
+            printUserGroups();
+            return null;
+        }
+        protected void onPostExecute(Bitmap result) {
+        }
+
     }
 
 /*

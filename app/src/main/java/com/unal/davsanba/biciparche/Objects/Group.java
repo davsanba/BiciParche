@@ -2,7 +2,6 @@ package com.unal.davsanba.biciparche.Objects;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 import com.google.firebase.database.*;
 import com.unal.davsanba.biciparche.Data.FbRef;
 import com.unal.davsanba.biciparche.Util.RouteOperationsManager;
@@ -52,14 +51,13 @@ public class Group implements Parcelable {
         this.groupAdminUserID = groupAdminUserID;
     }
 
-    private void getRouteFromId(String groupRouteID) {
+    private void getRouteFromId(final String groupRouteID) {
         DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference(FbRef.DATABASE_REFERENCE);
         Query query = mDatabaseReference.child(FbRef.ROUTE_REFERENCE).orderByKey().equalTo(groupRouteID);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-
                     groupRoute= RouteOperationsManager.RouteFromSnapshot(postSnapshot);
                     break;
                 }
@@ -81,7 +79,6 @@ public class Group implements Parcelable {
                         {
                             groupUsers.add(s.getValue().toString());
                         }
-
                     }
                 }
             }

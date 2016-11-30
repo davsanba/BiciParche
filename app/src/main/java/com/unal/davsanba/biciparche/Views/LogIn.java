@@ -83,6 +83,7 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener {
                                 Log.d(TAG, "usuario " + FirebaseUser.getDisplayName() + " no existe, creando usuario");
                                 User user = new User(FirebaseUser.getDisplayName(), FirebaseUser.getEmail(),
                                         FirebaseUser.getPhotoUrl().toString());
+
                                 Intent crear = new Intent(LogIn.this, ProfileOperationsActivity.class);
                                 crear.putExtra(ActRefs.EXTRA_CREATE_UPDATE_SHOW, ActRefs.EXTRA_CREATE);
                                 crear.putExtra(ActRefs.EXTRA_USER, user);

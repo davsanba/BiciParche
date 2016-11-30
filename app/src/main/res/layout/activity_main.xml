@@ -16,7 +16,8 @@
             android:layout_height="wrap_content"
             android:text="Buscar mi parche"
             android:id="@+id/btn_search"
-            android:layout_alignTop="@+id/btn_new_route" android:layout_alignParentEnd="true"/>
+            android:layout_alignTop="@+id/btn_new_route" android:layout_alignParentEnd="true"
+            android:visibility="invisible"/>
     <LinearLayout android:orientation="vertical" android:layout_width="match_parent" android:layout_height="50dp"
                   android:layout_weight="0.40">
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content"

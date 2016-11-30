@@ -32,7 +32,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="Small Text"
-                    android:id="@+id/static_group_list_users" android:textColor="@color/switch_thumb_material_light"/>
+                    android:id="@+id/static_group_list_users" android:textColor="@color/material_grey_900"/>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

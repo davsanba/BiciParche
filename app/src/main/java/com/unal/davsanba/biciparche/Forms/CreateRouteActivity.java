@@ -297,6 +297,7 @@ public class CreateRouteActivity extends FragmentActivity implements OnMapReadyC
     @Override
     public void onPlaceSelected(Place place) {
         createMark(place.getLatLng());
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(place.getLatLng()));
         //move map camera
     }
 
@@ -398,6 +399,7 @@ public class CreateRouteActivity extends FragmentActivity implements OnMapReadyC
                 lineOptions.color(Color.RED);
 
                 Log.d("onPostExecute","onPostExecute lineoptions decoded");
+                Log.d("onPostExecute",points.toString());
 
             }
 

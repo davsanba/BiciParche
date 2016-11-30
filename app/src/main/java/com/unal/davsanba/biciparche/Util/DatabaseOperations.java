@@ -102,11 +102,17 @@ public class DatabaseOperations {
 
         mDatabaseReference = FirebaseDatabase.getInstance().getReference(FbRef.DATABASE_REFERENCE)
                 .child(FbRef.LIST_REFERENCE).child(group.getGroupId());
-        mDatabaseReference.setValue(users);
+        mDatabaseReference.child("0").setValue(group.getGroupAdminUserID());
 
         mDatabaseReference = FirebaseDatabase.getInstance().getReference(FbRef.DATABASE_REFERENCE)
-                .child(FbRef.USER_REFERENCE).child(group.getGroupAdminUserID()).child(USER_ROUTES_KEY).child(group.getGroupId());
+                .child(FbRef.USER_REFERENCE).child(group.getGroupAdminUserID()).child(USER_GROUPS_KEY).child(group.getGroupId());
         mDatabaseReference.setValue(true);
+
+        for(String user: users){
+            mDatabaseReference = FirebaseDatabase.getInstance().getReference(FbRef.DATABASE_REFERENCE)
+                    .child(FbRef.REQUEST_REFERENCE).child(user);
+            mDatabaseReference.child(group.getGroupId()).setValue(false);
+        }
     }
 
 

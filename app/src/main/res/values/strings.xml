@@ -78,7 +78,7 @@
 
     <!-- Strings create group-->
 
-    <string name="static_list_group_members">No de usuarios:</string>
+    <string name="static_list_group_members">No. de usuarios:</string>
     <string name="static_group_users">Usuarios:</string>
     <string name="static_list_group_hour">Hora:</string>
     <string name="static_list_group_day">Dias:</string>
